@@ -1,0 +1,201 @@
+---
+title: "Computing with R and Hadoop"
+output:
+  html_document:
+    theme: cerulean
+    toc: yes
+---
+
+* * * 
+* * * 
+
+# Introduction
+
+* * * 
+
+## Hadoop
+
+- Hadoop is one of many "big data" tools
+- Hadoop is mature and widely used
+
+
+### Described
+
+> [Source: Apache Software Foundation - What is Apache Hadoop?](http://hadoop.apache.org/#What+Is+Apache+Hadoop%3F) 
+>   <br />
+>   <br />
+> The Apache Hadoop project develops open-source software for reliable, scalable, **distributed computing**. The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models. It is designed to scale up from single servers to thousands of machines, each offering **local computation and storage**...
+>  <br />
+>  <br />
+> (emphasis added)  
+
+
+### Appealing features
+
+Two of Hadoop's main features are particularly relevant to this talk:
+
+| Feature | Solves problem |
+| :- | :- |
+| Distributed storage | How do we easily store and access large datasets? |
+| Distributed/batch computing | How do we quickly run analyses on large datasets? |
+
+
+#### Distributed storage
+
+- Extremely large datasets cannot be stored on a single computer or hard-drive
+
+
+#### Distributed computing (map/reduce)
+
+- Hadoop pushes code to data
+- Hadoop has each computer run an algorithm on its local data (map).  The results get sent to one computer that "post-processes" and appropriately combines this data (reduce).
+    * **Key issue**: Analysts need to make sure that their data gets stored on multiple computers, otherwise Hadoop will not parallelize an analysis.
+        * By default, this is not an issue for medium to large datasets (>>128MB)
+        
+        
+        
+<!---
+
+## R
+
+
+- R is a very capable statistical analysis tool
+- R is mature and widely used for analyzing data
+
+### Described
+
+> [Source: CRAN homepage]() 
+>  <br />
+>  <br />
+>       R is "GNU S", a freely available language and environment for **statistical computing** and graphics which provides a **wide variety** of statistical and graphical techniques: linear and nonlinear modelling, statistical tests, time series analysis, classification, clustering, etc...
+
+### Appealing feature
+
+--->
+
+
+
+<!---
+
+## Using the best of R and Hadoop
+
+
+
+Due to the popularity of both systems, many people were interested in seeing R and Hadoop integrated.  Two solutions dominate the field:
+
+
+| Integration | Strength |
+| :- | :- | 
+| R/Hadoop | Actively developed by Revolution Analytics  |
+| RHIPE | |
+
+--->
+
+
+## When to consider R/Hadoop integrations  <br />
+
+
+- Key factors in your consideration:
+    - **TIME:** R tends to be a slower language, BUT
+    - **EASE OF PROGRAMMING:** Many general programming languages lack strong support for statistics and data science uses
+
+
+| Scenario | Use R/Hadoop? | Why? | Example
+| :- | :-: | :- | :- |
+| Analyzing small data stored in Hadoop | Y | R can quickly download data analyze it locally | Want to analyze summary datasets derived from map reduce jobs done in Hadoop |
+| Extracting complex features from large data stored in Hadoop | Y | R has more built-in and contributed functions that analyze data than many standard programming languages | R is a natural language to use to write an algorithm or classifier that extracts information about objects contained in images |
+| Applying prediction and classification models to datasets | Y | R is better at modeling than many standard programming languages | Using a logistic regression model to generate predictions in a large dataset |
+| Implementing an "iteration-based" machine learning algorithm | Maybe | 1) Other languages may be faster than R for your analysis, 2) Hadoop reads and writes a lot of data to disks, other "big data" tools, like Spark (and SparkR) are designed for speed in these scenarios by working in memory | aasdf |
+| Simple pre-processing of large data stored in Hadoop | N | Standard programming languages are much faster than R at executing many basic text and image processing tasks | Pre-processing twitter tweets for use in a natural language processing project |
+
+
+
+# Beginning to integrate R and Hadoop
+
+### Concept: Map reduce
+
+- introduce map reduce concept with the basic word count story
+- give a quick example of a more complicated map/reduce story
+
+### Testing connections
+
+- test connections with R and Hadoop to look at how connections are made
+
+- run a basic script to see what happens when you run the two together
+
+```
+# example directly copied from: https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md
+
+  library(rmr2)
+
+  Sys.setenv(HADOOP_STREAMING = '/usr/local/Cellar/hadoop/2.4.0/libexec/share/hadoop/tools/lib/hadoop-streaming-2.4.0.jar', 
+             HADOOP_CMD = '/usr/local/bin/hadoop')
+
+  groups = rbinom(32, n = 50, prob = 0.4)
+  tapply(groups, groups, length)  
+
+  groups.bak = groups
+  
+
+  groups = to.dfs(groups)
+  res = from.dfs(
+    mapreduce(
+      input = groups, 
+      map = function(., v) keyval(v, 1), 
+      reduce = 
+        function(k, vv) 
+          keyval(k, length(vv))))
+
+  
+```
+
+
+# Example (Logistic regression analysis)
+
+Suppose we are data analysts at an e-commerce company and have demographic data about our customers available to us from our sales records.  Our marketing department would like to start several regional ad campaigns to help increase business.  The marketing department has asked us to recommend where, and to whom they should focus their ad campaign.  To help us conduct our analysis, they have provided us with a large consumer dataset they recently purchased.  Presume this dataset contains related demographic information about potential customers and is stored in Hadoop.
+
+
+
+## Types of integration to demonstrate
+
+
+| Scenario | How? |
+| :- | :- |
+| Applying prediction and classification models to datasets | We plan to use our sales records to build a logistic regression model that can help predict which customers in the consumer dataset are likely to buy our products |
+| Analyzing smal data stored in Hadoop | Extract  | 
+
+
+## Steps
+
+1. In R, build a logistic regression model from the sales records (optional: if sales records are stored in Hadoop, take a random sample of users from this)
+2. Use R/Hadoop to (map) use the regression model to estimate probabilities that potential customers will buy our products, and (reduce) combine the raw data into regional summaries
+3. Use R/Hadoop to retrieve this summary data, and conduct follow-on analyses in R to make recommendations to the marketing department.
+
+## Sample code
+
+```
+asdfafasldkfjasldkfjas
+```
+
+## Variations (Play with it!)
+
+- Try applying a different logistic regression or prediction/classification model
+- Try extracting different summary data from reduce step 
+
+# Conclusion
+
+- adsf
+- asdf
+- asdf 
+
+## Further reading
+
+### R/Hadoop integrations
+
+- Airplane dataset via RHIPE
+- k-means via R/Hadoop
+- biglm
+
+### Hadoop information
+
+- asdf
