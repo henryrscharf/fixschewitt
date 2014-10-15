@@ -1,0 +1,123 @@
+\documentclass[12pt]{article}
+\usepackage{hyperref} % for hyperlink
+\usepackage{graphicx} % for figures
+\usepackage{caption}
+% \usepackage{subcaption}
+\usepackage{enumerate}
+\usepackage{amsmath,amsfonts,amssymb} % for mathematical symbols
+\usepackage{mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{float}
+
+\floatstyle{ruled}
+\newfloat{code}{thp}{lop}
+\floatname{code}{Code Segment}
+
+%\setlength{\topmargin}{-0in}
+%\setlength{\textheight}{9in}
+%\setlength{\evensidemargin}{-.25in}
+%\setlength{\oddsidemargin}{-.25in}
+%\setlength{\textwidth}{6.5in}                   % set up margin
+
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+% \graphicspath{}
+% \DeclareGraphicsExtensions{.pdf}
+
+\begin{document}
+
+\begin{center}
+{\bf \large Tutorial on Parallel Programming in R}\\
+{ \large Josh Hewitt \& Henry Scharf}\\
+\today{}
+\end{center}
+
+\vspace{.2in}
+
+\section{Description}
+
+As the size of data increases at a rapid pace, the number of
+individual computations for even standard analyes is growing at a
+staggering rate. The rate at which individual processors can perform
+these compuatations is no longer keeping pace with the volume of data,
+and so several useful techniques can become prohibitively slow to
+implement. Luckily, the cost of processors has continued to decline
+rapidly, and so multi-core systems are common place even in personal
+computers. Many of these slow techniques involve several independent
+tasks which may be spread over several cores, thereby significantly
+reducing the total computation time. In this tutorial, we will focus
+on identifying these situations, and using a few packages in R to
+`parallelize' sequential code. We illustrate the process with several
+commonplace examples which will include some of the following:
+
+\begin{enumerate}[(a)]
+\item bootstrapping (CI for linear regression coef)
+\item cross validation ?
+\item simulation?
+\item sensitivity analysis in bayesian statistics?
+\item large datasets? (eg: genetic?)
+\item permutation tests?
+\end{enumerate}
+
+\textsc{R packages used}
+\begin{enumerate}[(a)]
+\item `foreach'
+\item `multicore'
+\item `Rhadoop'
+\end{enumerate}
+
+\section{Outline and Objectives}
+\begin{enumerate}
+  \item Identify parallelizable computation tasks
+  \item Extend a working knowledge of R programming to take advantage
+    of multiple cores
+  \item 
+  \item 
+\end{enumerate}
+
+\section{About the Instructor}
+
+Henry Scharf is a PhD student at Colorado State University with a
+strong background in both teaching and computational statistics. He
+received his Masters in Education from the University of Arizona, and
+is an instructor at CSU. He has worked in conjunction with the 
+National Renewable Energy Labratory on questions surrounding
+prioritized compression of massive datasets sensistive to specific
+secondary analysis.
+
+\section{Relevance to Conference Goals}
+
+
+Theme 3: Model validation and comparison approaches.
+
+Theme 4: Software and programming methods to obtain, clean, describe,
+or analyze data.
+
+
+% \begin{table}[ht]
+%   \caption{}
+%   \label{}
+%   \begin{tabular}{|l|cc|}
+%     \hline
+%     \hline
+%     \hline
+%   \end{tabular}
+% \end{table}
+
+
+% \begin{figure}[h!]
+%   \centering
+%   \includegraphics[width=\linewidth]{}
+%   \caption{}
+%   \label{fig:}
+% \end{figure}
+
+% \appendix
+
+% \begin{thebibliography}{9}
+% \bibitem{Scharf}
+
+% \end{thebibliography}
+
+\end{document}
