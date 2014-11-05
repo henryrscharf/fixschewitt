@@ -1,9 +1,11 @@
 ---
 title: "Computing with R and Hadoop"
-output:
+output: 
   html_document:
     number_sections: yes
     theme: readable
+    toc: yes
+  pdf_document:
     toc: yes
 ---
 
@@ -13,14 +15,14 @@ output:
 
 # Learning goals
 
-1. Learn about Hadoop
-2. Learn about existing R/Hadoop integrations
+1. Learn what Hadoop is
+2. Learn about current R/Hadoop integrations
 3. Learn *when* to use R with Hadoop
-4. Learn *how* to use R with Hadoop
+4. Learn *how* to use R with Hadoop (by example)
 
 # Brief introduction to Hadoop
 
-Hadoop is currently a widely used open source distributed (read: "cloud") computing platform.  Here's how the project briefly describes itself:
+Hadoop is currently a widely used open source distributed computing platform (read: "cloud computing software").  Here's how the project briefly describes itself:
 
 
 
@@ -46,110 +48,70 @@ Two of Hadoop's main features are particularly relevant to this talk:
 ## Key ideas
 
 
-**Hadoop is software that...**
+**Hadoop is software that...** 
+
+<!--- need to add pictures for each of these points -->
 
 1. Links together servers to form a (storage + computing) cluster.
-2. Creates a distributed file system called **hdfs** that splits large data files into smaller pieces that servers across the cluster store.
-2. Uses the MapReduce programming model to implement distributed (i.e., parallel) computing.
+
+2. Creates a distributed file system called **hdfs** which splits large data files into smaller pieces that servers across the cluster store.
+
+    <!--- answer q: how does distributed storage facilitate distributed computing -->
     
-    *Note:* MapReduce achieves parallelization by running code on different data files.  It is important that the cluster is set up to store data across many servers.  Hadoop will not parallelize your analysis if all of your data resides on one server.
+3. Uses the MapReduce programming model to implement distributed (i.e., parallel) computing.
+
+    <!--- answer q: how does mapreduce work -->
     
-3. Hadoop's natural computing strength is to apply a function to **extract** "data" from each record in a dataset, **group** the function's outputs, and **compute** summaries of the grouped outputs.
+    *Note:* MapReduce achieves parallelization by running separate copies of an analysis  on the smaller pieces of data files stored across the cluster.  Parallelization will not occur when a data file is ``too small'' to be split into smaller pieces (by default less than 64MB or 128MB).
+    
+4. Hadoop's natural computing strength is to apply a function to **extract** "data" from each record in a dataset, **group** the function's outputs, and **compute** summaries of the grouped outputs.
 
     *Examples:* 
     
-    1. Given a dataset of tax records for many individuals, you could easily **extract** salaries, **group** by city, and **compute** average salaries by city with Hadoop.
+    1. Given a dataset of tax records for many individuals, you could easily **extract** salaries, **group** them by city, and **compute** average salaries by city with Hadoop.
     
-    2. Given a large collection of tweets, with Hadoop you could easily apply natural language processing algorithms to **extract** tweet topics, **group** by time or date, and **compute** the most popular topics over time.
+    2. Given a large collection of Twitter tweets, with Hadoop you could easily apply natural language processing algorithms to **extract** tweet topics, **group** by date, and **compute** the most popular topics over time.
     
-4. Hadoop less naturally applies iterative algorithms to datasets since iterative algorithms don't as immediately fit into the **extract**, **group**, and **compute/summarize** pattern.
+5. Although this is getting better, Hadoop less naturally applies iterative algorithms to datasets since iterative algorithms don't as immediately fit into the **extract**, **group**, and **compute/summarize** pattern.
 
     *Examples:*
     
-    1. Given the same collection of tweets, it would be more difficult (both computationally and in programming) to compute clusters of users who most often discuss similar topics.
+    1. Given the same collection of tweets, it would take more programming and computational effort to compute clusters of users who most often discuss similar topics.
     
-    2. Given a large dataset of sales records, it would be more difficult (both computationally and in programming) to fit a logistic regression model that could help predict which customers will buy different products based on demographic information.
+    2. Given a large dataset of sales records, it would take more programming and computational effort  to use the entire dataset to fit a logistic regression model that could help predict which customers will buy different products based on demographic information.
+    
+    *Note:* Sometimes data storage tricks and approximate algorithms can be used to help achieve efficient parallelization for these and related types of problems.
 
 
-## (remove) How Hadoop stores data (and enables distributed computing)
-
-## (remove) What is mapreduce?  How does it work?
 
 # R/Hadoop integrations
 
-## What exists
+R/Hadoop **integrations** let people use Hadoop to execute R code and also use R code to access data stored in Hadoop.  Cloud computing and statistics are both contemporary, related topics so practitioners naturally wanted to combine the two.
 
-## When to use
+## Key integration projects
 
-# Example
-
-# Conclusion
-
-## Further reading
-
-* * * 
-* * * 
-
-# Introduction
-
-* * * 
-
-
-
-
-#### Distributed computing (map/reduce)
-
-- Hadoop pushes code to data
-- Hadoop has each computer run an algorithm on its local data (map).  The results get sent to one computer that "post-processes" and appropriately combines this data (reduce).
-    * **Key issue**: Analysts need to make sure that their data gets stored on multiple computers, otherwise Hadoop will not parallelize an analysis.
-        * By default, this is not an issue for medium to large datasets (>>128MB)
-        
-        
-        
-<!---
-
-## R
-
-
-- R is a very capable statistical analysis tool
-- R is mature and widely used for analyzing data
-
-### Described
-
-> [Source: CRAN homepage]() 
->  <br />
->  <br />
->       R is "GNU S", a freely available language and environment for **statistical computing** and graphics which provides a **wide variety** of statistical and graphical techniques: linear and nonlinear modelling, statistical tests, time series analysis, classification, clustering, etc...
-
-### Appealing feature
-
---->
-
-
-
-<!---
-
-## Using the best of R and Hadoop
-
-
-
-Due to the popularity of both systems, many people were interested in seeing R and Hadoop integrated.  Two solutions dominate the field:
-
-
-| Integration | Strength |
+| Project | Sponsors/Maintainers | 
 | :- | :- | 
-| R/Hadoop | Actively developed by Revolution Analytics  |
-| RHIPE | |
-
---->
+| RHadoop | RevolutionAnalytics |
+| RHIPE | Loosely, people associated with the Deptartment of Statistics at Purdue |
 
 
-## When to consider R/Hadoop integrations  <br />
 
 
-- Key factors in your consideration:
-    - **TIME:** R tends to be a slower language, BUT
-    - **EASE OF PROGRAMMING:** Many general programming languages lack strong support for statistics and data science uses
+## When to consider integrating R and Hadoop
+
+You should consider using an R/Hadoop integration when the computational requirements of your project align with the natural strengths of R and Hadoop. In particular, there are several factors you should especially consider:
+
+| Factor | Mantra | Guideline | 
+| :- | :- | :- |
+| R's natural strength | Use R for statistical computing | Consider integrating when your project can be solved using code available in R, or when it is not easily solved in other languages | 
+| Hadoop's natural strength | Use Hadoop for distributed storage & batch computing | Consider integrating when your problem requires lots of storage or when it could benefit from parallelization  | 
+| Coding effort | Work smart, not hard | R and Hadoop are tools, not ``cure-all'' panaceas. Consider **not** integrating if it is easier to solve your problem with other tools |
+| Processing time | Work smart, not hard (2) | Although some problems can benefit from parallelization, consider **not** integrating if the gains are negligible since this can help you reduce the complexity of your project
+
+
+
+The following table applies these general ideas to common analytic scenarios:
 
 
 | Scenario | Use R/Hadoop? | Why? | Example
@@ -157,23 +119,27 @@ Due to the popularity of both systems, many people were interested in seeing R a
 | Analyzing small data stored in Hadoop | Y | R can quickly download data analyze it locally | Want to analyze summary datasets derived from map reduce jobs done in Hadoop |
 | Extracting complex features from large data stored in Hadoop | Y | R has more built-in and contributed functions that analyze data than many standard programming languages | R is a natural language to use to write an algorithm or classifier that extracts information about objects contained in images |
 | Applying prediction and classification models to datasets | Y | R is better at modeling than many standard programming languages | Using a logistic regression model to generate predictions in a large dataset |
-| Implementing an "iteration-based" machine learning algorithm | Maybe | 1) Other languages may be faster than R for your analysis, 2) Hadoop reads and writes a lot of data to disks, other "big data" tools, like Spark (and SparkR) are designed for speed in these scenarios by working in memory | aasdf |
+| Implementing an "iteration-based" machine learning algorithm | Maybe | 1) Other languages may be faster than R for your analysis, 2) Hadoop reads and writes a lot of data to disks, other "big data" tools, like Spark (and SparkR) are designed for speed in these scenarios by working in memory | Training a k-means classification algorithm on a large dataset |
 | Simple pre-processing of large data stored in Hadoop | N | Standard programming languages are much faster than R at executing many basic text and image processing tasks | Pre-processing twitter tweets for use in a natural language processing project |
 
 
 
-# Beginning to integrate R and Hadoop
 
-### Concept: Map reduce
+# Example integrations
 
-- introduce map reduce concept with the basic word count story
-- give a quick example of a more complicated map/reduce story
+## Warm up
 
-### Testing connections
+### Goals
 
-- test connections with R and Hadoop to look at how connections are made
+1. Test connections between R and Hadoop
+2. Run a basic script 
 
-- run a basic script to see what happens when you run the two together
+
+### Story
+
+
+### Code 
+
 
 ```
 # example directly copied from: https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md
@@ -202,13 +168,14 @@ Due to the popularity of both systems, many people were interested in seeing R a
 ```
 
 
-# Example (Logistic regression analysis)
-
-Suppose we are data analysts at an e-commerce company and have demographic data about our customers available to us from our sales records.  Our marketing department would like to start several regional ad campaigns to help increase business.  The marketing department has asked us to recommend where, and to whom they should focus their ad campaign.  To help us conduct our analysis, they have provided us with a large consumer dataset they recently purchased.  Presume this dataset contains related demographic information about potential customers and is stored in Hadoop.
 
 
+## Applying regression models, analyzing output
 
-## Types of integration to demonstrate
+
+### Goals
+
+Types of integration to demonstrate
 
 
 | Scenario | How? |
@@ -217,30 +184,45 @@ Suppose we are data analysts at an e-commerce company and have demographic data 
 | Analyzing smal data stored in Hadoop | Extract  | 
 
 
-## Steps
+### Story
+
+Suppose we are data analysts at an e-commerce company and have demographic data about our customers available to us from our sales records.  Our marketing department would like to start several regional ad campaigns to help increase business.  The marketing department has asked us to recommend where, and to whom they should focus their ad campaign.  To help us conduct our analysis, they have provided us with a large consumer dataset they recently purchased.  Presume this dataset contains related demographic information about potential customers and is stored in Hadoop.
+
+
+
+(Logistic regression analysis)
+
+
+
+
+
+
+
+### Approach
 
 1. In R, build a logistic regression model from the sales records (optional: if sales records are stored in Hadoop, take a random sample of users from this)
 2. Use R/Hadoop to (map) use the regression model to estimate probabilities that potential customers will buy our products, and (reduce) combine the raw data into regional summaries
 3. Use R/Hadoop to retrieve this summary data, and conduct follow-on analyses in R to make recommendations to the marketing department.
 
-## Sample code
+### Code
 
 ```
 asdfafasldkfjasldkfjas
 ```
 
-## Variations (Play with it!)
+### Variations (Play with it!)
 
 - Try applying a different logistic regression or prediction/classification model
 - Try extracting different summary data from reduce step 
 
+
+
+
+
 # Conclusion
 
-- adsf
-- asdf
-- asdf 
-
 ## Further reading
+
 
 ### R/Hadoop integrations
 

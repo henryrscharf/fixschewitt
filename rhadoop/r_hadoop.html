@@ -60,34 +60,29 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#brief-introduction-to-hadoop"><span class="toc-section-number">2</span> Brief introduction to Hadoop</a><ul>
 <li><a href="#key-features"><span class="toc-section-number">2.1</span> Key features</a></li>
 <li><a href="#key-ideas"><span class="toc-section-number">2.2</span> Key ideas</a></li>
-<li><a href="#remove-how-hadoop-stores-data-and-enables-distributed-computing"><span class="toc-section-number">2.3</span> (remove) How Hadoop stores data (and enables distributed computing)</a></li>
-<li><a href="#remove-what-is-mapreduce-how-does-it-work"><span class="toc-section-number">2.4</span> (remove) What is mapreduce? How does it work?</a></li>
 </ul></li>
 <li><a href="#rhadoop-integrations"><span class="toc-section-number">3</span> R/Hadoop integrations</a><ul>
-<li><a href="#what-exists"><span class="toc-section-number">3.1</span> What exists</a></li>
-<li><a href="#when-to-use"><span class="toc-section-number">3.2</span> When to use</a></li>
+<li><a href="#key-integration-projects"><span class="toc-section-number">3.1</span> Key integration projects</a></li>
+<li><a href="#when-to-consider-integrating-r-and-hadoop"><span class="toc-section-number">3.2</span> When to consider integrating R and Hadoop</a></li>
 </ul></li>
-<li><a href="#example"><span class="toc-section-number">4</span> Example</a></li>
+<li><a href="#example-integrations"><span class="toc-section-number">4</span> Example integrations</a><ul>
+<li><a href="#warm-up"><span class="toc-section-number">4.1</span> Warm up</a><ul>
+<li><a href="#goals"><span class="toc-section-number">4.1.1</span> Goals</a></li>
+<li><a href="#story"><span class="toc-section-number">4.1.2</span> Story</a></li>
+<li><a href="#code"><span class="toc-section-number">4.1.3</span> Code</a></li>
+</ul></li>
+<li><a href="#applying-regression-models-analyzing-output"><span class="toc-section-number">4.2</span> Applying regression models, analyzing output</a><ul>
+<li><a href="#goals-1"><span class="toc-section-number">4.2.1</span> Goals</a></li>
+<li><a href="#story-1"><span class="toc-section-number">4.2.2</span> Story</a></li>
+<li><a href="#approach"><span class="toc-section-number">4.2.3</span> Approach</a></li>
+<li><a href="#code-1"><span class="toc-section-number">4.2.4</span> Code</a></li>
+<li><a href="#variations-play-with-it"><span class="toc-section-number">4.2.5</span> Variations (Play with it!)</a></li>
+</ul></li>
+</ul></li>
 <li><a href="#conclusion"><span class="toc-section-number">5</span> Conclusion</a><ul>
-<li><a href="#further-reading"><span class="toc-section-number">5.1</span> Further reading</a></li>
-</ul></li>
-<li><a href="#introduction"><span class="toc-section-number">6</span> Introduction</a><ul>
-<li><a href="#when-to-consider-rhadoop-integrations"><span class="toc-section-number">6.1</span> When to consider R/Hadoop integrations <br /></a></li>
-</ul></li>
-<li><a href="#beginning-to-integrate-r-and-hadoop"><span class="toc-section-number">7</span> Beginning to integrate R and Hadoop</a><ul>
-<li><a href="#concept-map-reduce"><span class="toc-section-number">7.0.1</span> Concept: Map reduce</a></li>
-<li><a href="#testing-connections"><span class="toc-section-number">7.0.2</span> Testing connections</a></li>
-</ul></li>
-<li><a href="#example-logistic-regression-analysis"><span class="toc-section-number">8</span> Example (Logistic regression analysis)</a><ul>
-<li><a href="#types-of-integration-to-demonstrate"><span class="toc-section-number">8.1</span> Types of integration to demonstrate</a></li>
-<li><a href="#steps"><span class="toc-section-number">8.2</span> Steps</a></li>
-<li><a href="#sample-code"><span class="toc-section-number">8.3</span> Sample code</a></li>
-<li><a href="#variations-play-with-it"><span class="toc-section-number">8.4</span> Variations (Play with it!)</a></li>
-</ul></li>
-<li><a href="#conclusion-1"><span class="toc-section-number">9</span> Conclusion</a><ul>
-<li><a href="#further-reading-1"><span class="toc-section-number">9.1</span> Further reading</a><ul>
-<li><a href="#rhadoop-integrations-1"><span class="toc-section-number">9.1.1</span> R/Hadoop integrations</a></li>
-<li><a href="#hadoop-information"><span class="toc-section-number">9.1.2</span> Hadoop information</a></li>
+<li><a href="#further-reading"><span class="toc-section-number">5.1</span> Further reading</a><ul>
+<li><a href="#rhadoop-integrations-1"><span class="toc-section-number">5.1.1</span> R/Hadoop integrations</a></li>
+<li><a href="#hadoop-information"><span class="toc-section-number">5.1.2</span> Hadoop information</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -97,15 +92,15 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="learning-goals" class="section level1">
 <h1><span class="header-section-number">1</span> Learning goals</h1>
 <ol style="list-style-type: decimal">
-<li>Learn about Hadoop</li>
-<li>Learn about existing R/Hadoop integrations</li>
+<li>Learn what Hadoop is</li>
+<li>Learn about current R/Hadoop integrations</li>
 <li>Learn <em>when</em> to use R with Hadoop</li>
-<li>Learn <em>how</em> to use R with Hadoop</li>
+<li>Learn <em>how</em> to use R with Hadoop (by example)</li>
 </ol>
 </div>
 <div id="brief-introduction-to-hadoop" class="section level1">
 <h1><span class="header-section-number">2</span> Brief introduction to Hadoop</h1>
-<p>Hadoop is currently a widely used open source distributed (read: “cloud”) computing platform. Here’s how the project briefly describes itself:</p>
+<p>Hadoop is currently a widely used open source distributed computing platform (read: “cloud computing software”). Here’s how the project briefly describes itself:</p>
 <blockquote>
 <p><a href="http://hadoop.apache.org/#What+Is+Apache+Hadoop%3F">Apache Software Foundation - What is Apache Hadoop?</a> <br /> <br /> The Apache Hadoop project develops open-source software for reliable, scalable, <strong>distributed computing</strong>. The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models. It is designed to scale up from single servers to thousands of machines, each offering <strong>local computation and storage</strong>… <br /> <br /> (emphasis added)</p>
 </blockquote>
@@ -134,115 +129,92 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="key-ideas" class="section level2">
 <h2><span class="header-section-number">2.2</span> Key ideas</h2>
 <p><strong>Hadoop is software that…</strong></p>
+<!--- need to add pictures for each of these points -->
+
 <ol style="list-style-type: decimal">
-<li>Links together servers to form a (storage + computing) cluster.</li>
-<li>Creates a distributed file system called <strong>hdfs</strong> that splits large data files into smaller pieces that servers across the cluster store.</li>
+<li><p>Links together servers to form a (storage + computing) cluster.</p></li>
+<li><p>Creates a distributed file system called <strong>hdfs</strong> which splits large data files into smaller pieces that servers across the cluster store.</p>
+<!--- answer q: how does distributed storage facilitate distributed computing -->
+</li>
 <li><p>Uses the MapReduce programming model to implement distributed (i.e., parallel) computing.</p>
-<p><em>Note:</em> MapReduce achieves parallelization by running code on different data files. It is important that the cluster is set up to store data across many servers. Hadoop will not parallelize your analysis if all of your data resides on one server.</p></li>
+<!--- answer q: how does mapreduce work -->
+
+<p><em>Note:</em> MapReduce achieves parallelization by running separate copies of an analysis on the smaller pieces of data files stored across the cluster. Parallelization will not occur when a data file is ``too small’’ to be split into smaller pieces (by default less than 64MB or 128MB).</p></li>
 <li><p>Hadoop’s natural computing strength is to apply a function to <strong>extract</strong> “data” from each record in a dataset, <strong>group</strong> the function’s outputs, and <strong>compute</strong> summaries of the grouped outputs.</p>
 <p><em>Examples:</em></p>
 <ol style="list-style-type: decimal">
-<li><p>Given a dataset of tax records for many individuals, you could easily <strong>extract</strong> salaries, <strong>group</strong> by city, and <strong>compute</strong> average salaries by city with Hadoop.</p></li>
-<li><p>Given a large collection of tweets, with Hadoop you could easily apply natural language processing algorithms to <strong>extract</strong> tweet topics, <strong>group</strong> by time or date, and <strong>compute</strong> the most popular topics over time.</p></li>
+<li><p>Given a dataset of tax records for many individuals, you could easily <strong>extract</strong> salaries, <strong>group</strong> them by city, and <strong>compute</strong> average salaries by city with Hadoop.</p></li>
+<li><p>Given a large collection of Twitter tweets, with Hadoop you could easily apply natural language processing algorithms to <strong>extract</strong> tweet topics, <strong>group</strong> by date, and <strong>compute</strong> the most popular topics over time.</p></li>
 </ol></li>
-<li><p>Hadoop less naturally applies iterative algorithms to datasets since iterative algorithms don’t as immediately fit into the <strong>extract</strong>, <strong>group</strong>, and <strong>compute/summarize</strong> pattern.</p>
+<li><p>Although this is getting better, Hadoop less naturally applies iterative algorithms to datasets since iterative algorithms don’t as immediately fit into the <strong>extract</strong>, <strong>group</strong>, and <strong>compute/summarize</strong> pattern.</p>
 <p><em>Examples:</em></p>
 <ol style="list-style-type: decimal">
-<li><p>Given the same collection of tweets, it would be more difficult (both computationally and in programming) to compute clusters of users who most often discuss similar topics.</p></li>
-<li><p>Given a large dataset of sales records, it would be more difficult (both computationally and in programming) to fit a logistic regression model that could help predict which customers will buy different products based on demographic information.</p></li>
-</ol></li>
+<li><p>Given the same collection of tweets, it would take more programming and computational effort to compute clusters of users who most often discuss similar topics.</p></li>
+<li><p>Given a large dataset of sales records, it would take more programming and computational effort to use the entire dataset to fit a logistic regression model that could help predict which customers will buy different products based on demographic information.</p></li>
 </ol>
-</div>
-<div id="remove-how-hadoop-stores-data-and-enables-distributed-computing" class="section level2">
-<h2><span class="header-section-number">2.3</span> (remove) How Hadoop stores data (and enables distributed computing)</h2>
-</div>
-<div id="remove-what-is-mapreduce-how-does-it-work" class="section level2">
-<h2><span class="header-section-number">2.4</span> (remove) What is mapreduce? How does it work?</h2>
+<p><em>Note:</em> Sometimes data storage tricks and approximate algorithms can be used to help achieve efficient parallelization for these and related types of problems.</p></li>
+</ol>
 </div>
 </div>
 <div id="rhadoop-integrations" class="section level1">
 <h1><span class="header-section-number">3</span> R/Hadoop integrations</h1>
-<div id="what-exists" class="section level2">
-<h2><span class="header-section-number">3.1</span> What exists</h2>
+<p>R/Hadoop <strong>integrations</strong> let people use Hadoop to execute R code and also use R code to access data stored in Hadoop. Cloud computing and statistics are both contemporary, related topics so practitioners naturally wanted to combine the two.</p>
+<div id="key-integration-projects" class="section level2">
+<h2><span class="header-section-number">3.1</span> Key integration projects</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Project</th>
+<th align="left">Sponsors/Maintainers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">RHadoop</td>
+<td align="left">RevolutionAnalytics</td>
+</tr>
+<tr class="even">
+<td align="left">RHIPE</td>
+<td align="left">Loosely, people associated with the Deptartment of Statistics at Purdue</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="when-to-use" class="section level2">
-<h2><span class="header-section-number">3.2</span> When to use</h2>
-</div>
-</div>
-<div id="example" class="section level1">
-<h1><span class="header-section-number">4</span> Example</h1>
-</div>
-<div id="conclusion" class="section level1">
-<h1><span class="header-section-number">5</span> Conclusion</h1>
-<div id="further-reading" class="section level2">
-<h2><span class="header-section-number">5.1</span> Further reading</h2>
-<hr />
-<hr />
-</div>
-</div>
-<div id="introduction" class="section level1">
-<h1><span class="header-section-number">6</span> Introduction</h1>
-<hr />
-<div id="distributed-computing-mapreduce" class="section level4">
-<h4><span class="header-section-number">6.0.0.1</span> Distributed computing (map/reduce)</h4>
-<ul>
-<li>Hadoop pushes code to data</li>
-<li>Hadoop has each computer run an algorithm on its local data (map). The results get sent to one computer that “post-processes” and appropriately combines this data (reduce).
-<ul>
-<li><strong>Key issue</strong>: Analysts need to make sure that their data gets stored on multiple computers, otherwise Hadoop will not parallelize an analysis.
-<ul>
-<li>By default, this is not an issue for medium to large datasets (&gt;&gt;128MB)</li>
-</ul></li>
-</ul></li>
-</ul>
-<!---
-
-## R
-
-
-- R is a very capable statistical analysis tool
-- R is mature and widely used for analyzing data
-
-### Described
-
-> [Source: CRAN homepage]() 
->  <br />
->  <br />
->       R is "GNU S", a freely available language and environment for **statistical computing** and graphics which provides a **wide variety** of statistical and graphical techniques: linear and nonlinear modelling, statistical tests, time series analysis, classification, clustering, etc...
-
-### Appealing feature
-
---->
-
-
-
-<!---
-
-## Using the best of R and Hadoop
-
-
-
-Due to the popularity of both systems, many people were interested in seeing R and Hadoop integrated.  Two solutions dominate the field:
-
-
-| Integration | Strength |
-| :- | :- | 
-| R/Hadoop | Actively developed by Revolution Analytics  |
-| RHIPE | |
-
---->
-
-
-</div>
-<div id="when-to-consider-rhadoop-integrations" class="section level2">
-<h2><span class="header-section-number">6.1</span> When to consider R/Hadoop integrations <br /></h2>
-<ul>
-<li>Key factors in your consideration:
-<ul>
-<li><strong>TIME:</strong> R tends to be a slower language, BUT</li>
-<li><strong>EASE OF PROGRAMMING:</strong> Many general programming languages lack strong support for statistics and data science uses</li>
-</ul></li>
-</ul>
+<div id="when-to-consider-integrating-r-and-hadoop" class="section level2">
+<h2><span class="header-section-number">3.2</span> When to consider integrating R and Hadoop</h2>
+<p>You should consider using an R/Hadoop integration when the computational requirements of your project align with the natural strengths of R and Hadoop. In particular, there are several factors you should especially consider:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Factor</th>
+<th align="left">Mantra</th>
+<th align="left">Guideline</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">R’s natural strength</td>
+<td align="left">Use R for statistical computing</td>
+<td align="left">Consider integrating when your project can be solved using code available in R, or when it is not easily solved in other languages</td>
+</tr>
+<tr class="even">
+<td align="left">Hadoop’s natural strength</td>
+<td align="left">Use Hadoop for distributed storage &amp; batch computing</td>
+<td align="left">Consider integrating when your problem requires lots of storage or when it could benefit from parallelization</td>
+</tr>
+<tr class="odd">
+<td align="left">Coding effort</td>
+<td align="left">Work smart, not hard</td>
+<td align="left">R and Hadoop are tools, not ``cure-all’’ panaceas. Consider <strong>not</strong> integrating if it is easier to solve your problem with other tools</td>
+</tr>
+<tr class="even">
+<td align="left">Processing time</td>
+<td align="left">Work smart, not hard (2)</td>
+<td align="left">Although some problems can benefit from parallelization, consider <strong>not</strong> integrating if the gains are negligible since this can help you reduce the complexity of your project</td>
+</tr>
+</tbody>
+</table>
+<p>The following table applies these general ideas to common analytic scenarios:</p>
 <table>
 <thead>
 <tr class="header">
@@ -275,7 +247,7 @@ Due to the popularity of both systems, many people were interested in seeing R a
 <td align="left">Implementing an “iteration-based” machine learning algorithm</td>
 <td align="center">Maybe</td>
 <td align="left">1) Other languages may be faster than R for your analysis, 2) Hadoop reads and writes a lot of data to disks, other “big data” tools, like Spark (and SparkR) are designed for speed in these scenarios by working in memory</td>
-<td align="left">aasdf</td>
+<td align="left">Training a k-means classification algorithm on a large dataset</td>
 </tr>
 <tr class="odd">
 <td align="left">Simple pre-processing of large data stored in Hadoop</td>
@@ -287,21 +259,22 @@ Due to the popularity of both systems, many people were interested in seeing R a
 </table>
 </div>
 </div>
-<div id="beginning-to-integrate-r-and-hadoop" class="section level1">
-<h1><span class="header-section-number">7</span> Beginning to integrate R and Hadoop</h1>
-<div id="concept-map-reduce" class="section level3">
-<h3><span class="header-section-number">7.0.1</span> Concept: Map reduce</h3>
-<ul>
-<li>introduce map reduce concept with the basic word count story</li>
-<li>give a quick example of a more complicated map/reduce story</li>
-</ul>
+<div id="example-integrations" class="section level1">
+<h1><span class="header-section-number">4</span> Example integrations</h1>
+<div id="warm-up" class="section level2">
+<h2><span class="header-section-number">4.1</span> Warm up</h2>
+<div id="goals" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Goals</h3>
+<ol style="list-style-type: decimal">
+<li>Test connections between R and Hadoop</li>
+<li>Run a basic script</li>
+</ol>
 </div>
-<div id="testing-connections" class="section level3">
-<h3><span class="header-section-number">7.0.2</span> Testing connections</h3>
-<ul>
-<li><p>test connections with R and Hadoop to look at how connections are made</p></li>
-<li><p>run a basic script to see what happens when you run the two together</p></li>
-</ul>
+<div id="story" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> Story</h3>
+</div>
+<div id="code" class="section level3">
+<h3><span class="header-section-number">4.1.3</span> Code</h3>
 <pre><code># example directly copied from: https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md
 
   library(rmr2)
@@ -327,11 +300,11 @@ Due to the popularity of both systems, many people were interested in seeing R a
   </code></pre>
 </div>
 </div>
-<div id="example-logistic-regression-analysis" class="section level1">
-<h1><span class="header-section-number">8</span> Example (Logistic regression analysis)</h1>
-<p>Suppose we are data analysts at an e-commerce company and have demographic data about our customers available to us from our sales records. Our marketing department would like to start several regional ad campaigns to help increase business. The marketing department has asked us to recommend where, and to whom they should focus their ad campaign. To help us conduct our analysis, they have provided us with a large consumer dataset they recently purchased. Presume this dataset contains related demographic information about potential customers and is stored in Hadoop.</p>
-<div id="types-of-integration-to-demonstrate" class="section level2">
-<h2><span class="header-section-number">8.1</span> Types of integration to demonstrate</h2>
+<div id="applying-regression-models-analyzing-output" class="section level2">
+<h2><span class="header-section-number">4.2</span> Applying regression models, analyzing output</h2>
+<div id="goals-1" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Goals</h3>
+<p>Types of integration to demonstrate</p>
 <table>
 <thead>
 <tr class="header">
@@ -351,37 +324,38 @@ Due to the popularity of both systems, many people were interested in seeing R a
 </tbody>
 </table>
 </div>
-<div id="steps" class="section level2">
-<h2><span class="header-section-number">8.2</span> Steps</h2>
+<div id="story-1" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Story</h3>
+<p>Suppose we are data analysts at an e-commerce company and have demographic data about our customers available to us from our sales records. Our marketing department would like to start several regional ad campaigns to help increase business. The marketing department has asked us to recommend where, and to whom they should focus their ad campaign. To help us conduct our analysis, they have provided us with a large consumer dataset they recently purchased. Presume this dataset contains related demographic information about potential customers and is stored in Hadoop.</p>
+<p>(Logistic regression analysis)</p>
+</div>
+<div id="approach" class="section level3">
+<h3><span class="header-section-number">4.2.3</span> Approach</h3>
 <ol style="list-style-type: decimal">
 <li>In R, build a logistic regression model from the sales records (optional: if sales records are stored in Hadoop, take a random sample of users from this)</li>
 <li>Use R/Hadoop to (map) use the regression model to estimate probabilities that potential customers will buy our products, and (reduce) combine the raw data into regional summaries</li>
 <li>Use R/Hadoop to retrieve this summary data, and conduct follow-on analyses in R to make recommendations to the marketing department.</li>
 </ol>
 </div>
-<div id="sample-code" class="section level2">
-<h2><span class="header-section-number">8.3</span> Sample code</h2>
+<div id="code-1" class="section level3">
+<h3><span class="header-section-number">4.2.4</span> Code</h3>
 <pre><code>asdfafasldkfjasldkfjas</code></pre>
 </div>
-<div id="variations-play-with-it" class="section level2">
-<h2><span class="header-section-number">8.4</span> Variations (Play with it!)</h2>
+<div id="variations-play-with-it" class="section level3">
+<h3><span class="header-section-number">4.2.5</span> Variations (Play with it!)</h3>
 <ul>
 <li>Try applying a different logistic regression or prediction/classification model</li>
 <li>Try extracting different summary data from reduce step</li>
 </ul>
 </div>
 </div>
-<div id="conclusion-1" class="section level1">
-<h1><span class="header-section-number">9</span> Conclusion</h1>
-<ul>
-<li>adsf</li>
-<li>asdf</li>
-<li>asdf</li>
-</ul>
-<div id="further-reading-1" class="section level2">
-<h2><span class="header-section-number">9.1</span> Further reading</h2>
+</div>
+<div id="conclusion" class="section level1">
+<h1><span class="header-section-number">5</span> Conclusion</h1>
+<div id="further-reading" class="section level2">
+<h2><span class="header-section-number">5.1</span> Further reading</h2>
 <div id="rhadoop-integrations-1" class="section level3">
-<h3><span class="header-section-number">9.1.1</span> R/Hadoop integrations</h3>
+<h3><span class="header-section-number">5.1.1</span> R/Hadoop integrations</h3>
 <ul>
 <li>Airplane dataset via RHIPE</li>
 <li>k-means via R/Hadoop</li>
@@ -389,7 +363,7 @@ Due to the popularity of both systems, many people were interested in seeing R a
 </ul>
 </div>
 <div id="hadoop-information" class="section level3">
-<h3><span class="header-section-number">9.1.2</span> Hadoop information</h3>
+<h3><span class="header-section-number">5.1.2</span> Hadoop information</h3>
 <ul>
 <li>asdf</li>
 </ul>
