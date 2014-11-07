@@ -88,6 +88,23 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </ul>
 </div>
 
+<!---
+
+---
+title: "Untitled"
+output:
+  ioslides_presentation: default
+  beamer_presentation:
+    toc: yes
+---
+
+
+
+
+--->
+
+
+
 <hr />
 <div id="learning-goals" class="section level1">
 <h1><span class="header-section-number">1</span> Learning goals</h1>
@@ -247,7 +264,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <td align="left">Implementing an “iteration-based” machine learning algorithm</td>
 <td align="center">Maybe</td>
 <td align="left">1) Other languages may be faster than R for your analysis, 2) Hadoop reads and writes a lot of data to disks, other “big data” tools, like Spark (and SparkR) are designed for speed in these scenarios by working in memory</td>
-<td align="left">Training a k-means classification algorithm on a large dataset</td>
+<td align="left">Training a k-means classification algorithm or logistic regression on a large dataset</td>
 </tr>
 <tr class="odd">
 <td align="left">Simple pre-processing of large data stored in Hadoop</td>
@@ -275,29 +292,91 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="code" class="section level3">
 <h3><span class="header-section-number">4.1.3</span> Code</h3>
-<pre><code># example directly copied from: https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md
-
-  library(rmr2)
-
-  Sys.setenv(HADOOP_STREAMING = '/usr/local/Cellar/hadoop/2.4.0/libexec/share/hadoop/tools/lib/hadoop-streaming-2.4.0.jar', 
-             HADOOP_CMD = '/usr/local/bin/hadoop')
-
-  groups = rbinom(32, n = 50, prob = 0.4)
-  tapply(groups, groups, length)  
-
-  groups.bak = groups
+<p>Open “The Hadoop UI” (HUE) so you can monitor the progress of jobs you submit by visiting <a href="http://192.168.1.105:8888/jobbrowser/">http://192.168.1.105:8888/jobbrowser/</a> The username and password are both <strong>cloudera</strong>. You can also view files stored in Hadoop by visiting <a href="http://192.168.1.105:8888/filebrowser/#/">http://192.168.1.105:8888/filebrowser/#/</a></p>
+<p>RHadoop can only be used from an R console on a machine in the Hadoop cluster. Run the following code from your computer’s command line to log in to the Hadoop node (the password is <strong>cloudera</strong>):</p>
+<pre><code>ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null cloudera@192.168.1.105
+</code></pre>
+<p>Still from your computer’s command line, start R by typing ``R’’. The following code is the R script you can copy and paste to run this warm up example.</p>
+<pre><code># Example based on RevolutionAnalytics documentation &quot;Mapreduce in R&quot;
+# https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md
   
+library(rmr2)
+library(rhdfs)
 
-  groups = to.dfs(groups)
-  res = from.dfs(
-    mapreduce(
-      input = groups, 
-      map = function(., v) keyval(v, 1), 
-      reduce = 
-        function(k, vv) 
-          keyval(k, length(vv))))
+#
+# &quot;Connect&quot; to Hadoop from R
+#
 
-  </code></pre>
+# rhdfs uses applications installed at this location to read and write data 
+#   from Hadoop
+Sys.setenv(HADOOP_CMD='/usr/bin/hadoop')
+
+# rmr2 uses HADOOP_STREAMING to send code to Hadoop
+Sys.setenv(HADOOP_STREAMING='/usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming.jar')
+
+  
+#
+# Create a dataset and store it in Hadoop
+#
+
+
+# create a vector of random numbers
+groups = rbinom(32, n = 50, prob = 0.4)
+
+# save the numbers to a temporary file in hdfs (Hadoop format)
+groups.hdfs = to.dfs(groups)
+
+# look at the name of the temporary file
+#   Note: use HUE's file browser to go and look at this file, you will notice
+#   that files, by default, are saved in a compressed binary &quot;Hadoop&quot; format 
+groups.hdfs()
+
+# save the same numbers to a temporary csv file in hdfs
+groups.hdfs.csv = to.dfs(groups, format='csv')
+
+# look at the name of the temporary csv file
+#   Again, use HUE's file browser to go and look at this file. Read the R 
+#   documentation, ?make.input.format or ?to.dfs for more details about file 
+#   formats
+groups.hdfs.csv()
+
+
+#
+# Analyze the data
+#
+
+# set up the map (i.e., &quot;extraction&quot;) function
+counting.mapper = function(., v) {
+  # extract &quot;counting element&quot; of 1, group by value of line
+  keyval(v, 1)
+}
+
+# set up the reduce (i.e., &quot;compute/summarize&quot;) function
+counting.reducer = function(k, vv) {
+  # sum up the number of times the k^th value was seen in the dataset
+  keyval(k, sum(vv))
+}
+
+
+# set up and execute the map reduce job that analyzes the data in Hadoop
+#  by default, mapreduce() returns the filename where the data is stored
+mapred.result = mapreduce(
+  input = groups.hdfs,
+  map = counting.mapper,
+  reduce = counting.reducer
+)
+
+# load the results into R
+analysis.results = from.dfs(mapred.result)
+          
+
+# look at the results
+analysis.results
+          
+# compare the results with the same analysis done completely in R
+#   remember: this is a trivial example
+tapply(groups, groups, length)  
+</code></pre>
 </div>
 </div>
 <div id="applying-regression-models-analyzing-output" class="section level2">
@@ -354,6 +433,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <h1><span class="header-section-number">5</span> Conclusion</h1>
 <div id="further-reading" class="section level2">
 <h2><span class="header-section-number">5.1</span> Further reading</h2>
+<p><a href="https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md">https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md</a></p>
 <div id="rhadoop-integrations-1" class="section level3">
 <h3><span class="header-section-number">5.1.1</span> R/Hadoop integrations</h3>
 <ul>

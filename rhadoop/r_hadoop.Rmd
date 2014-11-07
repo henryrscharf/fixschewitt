@@ -1,3 +1,5 @@
+
+
 ---
 title: "Computing with R and Hadoop"
 output: 
@@ -8,6 +10,22 @@ output:
   pdf_document:
     toc: yes
 ---
+
+
+<!---
+
+---
+title: "Untitled"
+output:
+  ioslides_presentation: default
+  beamer_presentation:
+    toc: yes
+---
+
+
+
+
+---!>
 
 
 
@@ -63,7 +81,7 @@ Two of Hadoop's main features are particularly relevant to this talk:
     <!--- answer q: how does mapreduce work -->
     
     *Note:* MapReduce achieves parallelization by running separate copies of an analysis  on the smaller pieces of data files stored across the cluster.  Parallelization will not occur when a data file is ``too small'' to be split into smaller pieces (by default less than 64MB or 128MB).
-    
+
 4. Hadoop's natural computing strength is to apply a function to **extract** "data" from each record in a dataset, **group** the function's outputs, and **compute** summaries of the grouped outputs.
 
     *Examples:* 
@@ -119,7 +137,7 @@ The following table applies these general ideas to common analytic scenarios:
 | Analyzing small data stored in Hadoop | Y | R can quickly download data analyze it locally | Want to analyze summary datasets derived from map reduce jobs done in Hadoop |
 | Extracting complex features from large data stored in Hadoop | Y | R has more built-in and contributed functions that analyze data than many standard programming languages | R is a natural language to use to write an algorithm or classifier that extracts information about objects contained in images |
 | Applying prediction and classification models to datasets | Y | R is better at modeling than many standard programming languages | Using a logistic regression model to generate predictions in a large dataset |
-| Implementing an "iteration-based" machine learning algorithm | Maybe | 1) Other languages may be faster than R for your analysis, 2) Hadoop reads and writes a lot of data to disks, other "big data" tools, like Spark (and SparkR) are designed for speed in these scenarios by working in memory | Training a k-means classification algorithm on a large dataset |
+| Implementing an "iteration-based" machine learning algorithm | Maybe | 1) Other languages may be faster than R for your analysis, 2) Hadoop reads and writes a lot of data to disks, other "big data" tools, like Spark (and SparkR) are designed for speed in these scenarios by working in memory | Training a k-means classification algorithm or logistic regression on a large dataset |
 | Simple pre-processing of large data stored in Hadoop | N | Standard programming languages are much faster than R at executing many basic text and image processing tasks | Pre-processing twitter tweets for use in a natural language processing project |
 
 
@@ -140,31 +158,100 @@ The following table applies these general ideas to common analytic scenarios:
 
 ### Code 
 
+Open "The Hadoop UI" (HUE) so you can monitor the progress of jobs you submit by visiting http://192.168.1.105:8888/jobbrowser/  The username and password are both **cloudera**.  You can also view files stored in Hadoop by visiting http://192.168.1.105:8888/filebrowser/#/
+
+
+RHadoop can only be used from an R console on a machine in the Hadoop cluster.  Run the following code from your computer's command line to log in to the Hadoop node (the password is **cloudera**):
 
 ```
-# example directly copied from: https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null cloudera@192.168.1.105
 
-  library(rmr2)
+```
 
-  Sys.setenv(HADOOP_STREAMING = '/usr/local/Cellar/hadoop/2.4.0/libexec/share/hadoop/tools/lib/hadoop-streaming-2.4.0.jar', 
-             HADOOP_CMD = '/usr/local/bin/hadoop')
 
-  groups = rbinom(32, n = 50, prob = 0.4)
-  tapply(groups, groups, length)  
+Still from your computer's command line, start R by typing ``R''.  The following code is the R script you can copy and paste to run this warm up example.
 
-  groups.bak = groups
+```
+# Example based on RevolutionAnalytics documentation "Mapreduce in R"
+# https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md
   
+library(rmr2)
+library(rhdfs)
 
-  groups = to.dfs(groups)
-  res = from.dfs(
-    mapreduce(
-      input = groups, 
-      map = function(., v) keyval(v, 1), 
-      reduce = 
-        function(k, vv) 
-          keyval(k, length(vv))))
+#
+# "Connect" to Hadoop from R
+#
+
+# rhdfs uses applications installed at this location to read and write data 
+#   from Hadoop
+Sys.setenv(HADOOP_CMD='/usr/bin/hadoop')
+
+# rmr2 uses HADOOP_STREAMING to send code to Hadoop
+Sys.setenv(HADOOP_STREAMING='/usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming.jar')
 
   
+#
+# Create a dataset and store it in Hadoop
+#
+
+
+# create a vector of random numbers
+groups = rbinom(32, n = 50, prob = 0.4)
+
+# save the numbers to a temporary file in hdfs (Hadoop format)
+groups.hdfs = to.dfs(groups)
+
+# look at the name of the temporary file
+#   Note: use HUE's file browser to go and look at this file, you will notice
+#   that files, by default, are saved in a compressed binary "Hadoop" format 
+groups.hdfs()
+
+# save the same numbers to a temporary csv file in hdfs
+groups.hdfs.csv = to.dfs(groups, format='csv')
+
+# look at the name of the temporary csv file
+#   Again, use HUE's file browser to go and look at this file. Read the R 
+#   documentation, ?make.input.format or ?to.dfs for more details about file 
+#   formats
+groups.hdfs.csv()
+
+
+#
+# Analyze the data
+#
+
+# set up the map (i.e., "extraction") function
+counting.mapper = function(., v) {
+  # extract "counting element" of 1, group by value of line
+  keyval(v, 1)
+}
+
+# set up the reduce (i.e., "compute/summarize") function
+counting.reducer = function(k, vv) {
+  # sum up the number of times the k^th value was seen in the dataset
+  keyval(k, sum(vv))
+}
+
+
+# set up and execute the map reduce job that analyzes the data in Hadoop
+#  by default, mapreduce() returns the filename where the data is stored
+mapred.result = mapreduce(
+  input = groups.hdfs,
+  map = counting.mapper,
+  reduce = counting.reducer
+)
+
+# load the results into R
+analysis.results = from.dfs(mapred.result)
+          
+
+# look at the results
+analysis.results
+          
+# compare the results with the same analysis done completely in R
+#   remember: this is a trivial example
+tapply(groups, groups, length)  
+
 ```
 
 
@@ -222,6 +309,8 @@ asdfafasldkfjasldkfjas
 # Conclusion
 
 ## Further reading
+
+https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md
 
 
 ### R/Hadoop integrations
