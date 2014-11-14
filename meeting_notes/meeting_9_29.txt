@@ -1,0 +1,11 @@
+Something that foreach can't do, but functions from parallel package
+can...
+Why do one or the other? Compare/contrast?
+
+Another example: simulation study?
+
+Third thing: (snow is now balled up with parallel... heh) biglm()? 
+
+For next time: knitr doc for 30min presentation
+
+
