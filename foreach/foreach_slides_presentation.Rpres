@@ -1,0 +1,48 @@
+Using `foreach`
+========================================================
+title: false
+author: Henry Scharf
+font-family: 'Lato'
+date: November 14, 2014
+navigation: slides
+
+THOUGHTS: 
+========================================================
+type: prompt
+incremental: true
+id: thoughts
+
+- this example is a lot of reps of teeny calculations. Might see better speed up if the reps were larger things. MCMC?
+- need something more compelling for `iterators`
+- more complicated example for `.combine`? mean?
+- do their own code? fix some code?
+- images for heavy analysis?
+- model search? random forest? svm? other ML topics?
+- references
+- dorng in my bootstrap?
+
+```{r setup, include=FALSE}
+# set global chunk options
+library(knitr)
+opts_chunk$set(cache=FALSE)
+```
+
+
+First Slide
+========================================================
+
+Would you like to see my [thoughts](#/thoughts)?
+
+Slide With Code
+========================================================
+
+```{r}
+summary(cars)
+```
+
+Slide With Plot
+========================================================
+
+```{r, echo=FALSE}
+plot(cars)
+```
