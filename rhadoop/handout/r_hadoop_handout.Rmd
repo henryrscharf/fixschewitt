@@ -63,7 +63,7 @@ Two of Hadoop's main features are particularly relevant to this talk:
 | Distributed/batch computing | How do we quickly run analyses on large datasets? |
 
 
-## Key ideas
+## Overview
 
 
 **Hadoop is software that...** 
