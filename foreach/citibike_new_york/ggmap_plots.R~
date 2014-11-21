@@ -1,0 +1,4 @@
+library(ggmap)
+
+qmap(location = "boston",
+     zoom = 12)

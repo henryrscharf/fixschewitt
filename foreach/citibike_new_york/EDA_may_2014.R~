@@ -1,0 +1,46 @@
+library(ggmap)
+## takes about 30 seconds to load this dataset
+newyork <- load("newyork_may_2014.RData")
+
+dim(newyork)
+## subsetting for ease of use
+N <- 2000
+subsamp <- sort(sample(0:nrow(newyork), size = N))
+ny <- newyork[subsamp, ]
+
+plot(newyork[subsamp, c(16, 14)], xlim = c(0, 60))
+
+hist(newyork$birth.year)
+
+## this takes 10 seconds
+qmap(location = 'tucson',
+     zoom = 12,
+     source = 'google')
+
+## EDA for bike sharing data
+## this takes a while
+plot(ny$starttime, ny$tripduration)
+
+hist(newyork$tripduration[startday==1 & starthour==17], breaks = 30)
+
+plot(newyork$starttime[startday==1 & starthour==17],
+     newyork$tripduration[startday==1 & starthour==17])
+
+## probably unsurprisingly, distribution of trip duration seems mostly constant
+## in time for weekdays
+qplot(tripduration.min,
+      ..density..,
+      data = newyork[newyork$startday == "Thursday", ],
+      geom = "histogram",
+      binwidth = 5,
+      xlim = c(0, 180)) +
+    facet_wrap(~ starthour)
+## and weekends. This may be an enforced effect from the nature of the bike
+## share system.
+qplot(tripduration.min,
+      ..density..,
+      data = newyork[newyork$startday == "Saturday", ],
+      geom = "histogram",
+      binwidth = 5,
+      xlim = c(0, 180)) +
+    facet_wrap(~ starthour)

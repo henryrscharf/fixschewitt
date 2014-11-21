@@ -1,0 +1,64 @@
+
+R version 3.1.1 (2014-07-10) -- "Sock it to Me"
+Copyright (C) 2014 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin10.8.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+Loading required package: grid
+Loading required package: lattice
+Loading required package: survival
+Loading required package: stats
+Loading required package: utils
+Loading required package: graphics
+Loading required package: splines
+Loading required package: Formula
+
+Attaching package: œôòøHmiscœôòù
+
+The following objects are masked from œôòøpackage:baseœôòù:
+
+    format.pval, round.POSIXt, trunc.POSIXt, units
+
+Loading required package: grDevices
+
+Welcome at Sun Nov 16 20:35:53 2014 
+> ## ## takes about 30 seconds to load this dataset
+> ## setwd("~/Google Drive/statistics/bicycle_sharing/citibike_new_york")
+> ## newyork <- read.csv(file = "~/Google Drive/statistics/bicycle_sharing/citibike_new_york/2014-05 - Citi Bike trip data.csv")
+> 
+> ## ## some data massaging/arranging
+> ## tripduration.min <- newyork$tripduration/60
+> ## ## newyork <- newyork[newyork$birth.year != "\\N", ]
+> ## newyork$birth.year <- as.numeric(newyork$birth.year)
+> ## ## about 15 seconds
+> ## newyork$starttime <- as.POSIXct(newyork$starttime, tz = "America/New_York")
+> ## startdate <- as.numeric(format(newyork$starttime, "%d"))
+> ## startday <- format(newyork$starttime, "%A")
+> ## startday.no <- format(newyork$starttime, "%w")
+> ## starthour <- as.numeric(format(newyork$starttime, "%H"))
+> ## newyork <- cbind(newyork,
+> ##                  tripduration.min,
+> ##                  startdate,
+> ##                  startday,
+> ##                  startday.no,
+> ##                  starthour)
+> 
+> ## save(newyork, file = "newyork_may_2014.RData")
+> 
+> ids <- sort(unique(newyork$end.station.id))
+Error in unique(newyork$end.station.id) : object 'newyork' not found
+Calls: sort -> unique
+Execution halted

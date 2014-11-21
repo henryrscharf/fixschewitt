@@ -1,0 +1,41 @@
+#########################
+## HENRY SCHARF        ##
+## UPDATED: 11/20/2014 ##
+#########################
+
+load("~/Google Drive/statistics/bicycle_sharing/citibike_new_york/arrivals_attributes.RData")
+
+## Want to subset the data. Pick random ids?
+n <- 7
+set.seed(1985)
+subset.id <- sample(unique(arrivals$id), size = n)
+subset.index <- c(sapply(X = subset.id,
+                         FUN = function(x) {
+                             which(arrivals$id == x)
+                         }))
+arrivals.sub <- arrivals[subset.index, ]
+arrivals.single <- arrivals[arrivals$id == subset.id[1], ]
+
+## Want to subset the data. Pick busiest ids?
+library(foreach)
+library(doParallel)
+registerDoParallel(cl = 4)
+mean.arrivals <- foreach(i = unique(arrivals$id),
+                         .inorder = FALSE,
+                         .combine = "c") %dopar%
+                 mean(arrivals$arrivals[arrivals$id == i])
+## qplot(x = mean.arrivals) +
+##     geom_histogram(color = "gray")
+
+n <- 7
+subset.mean <- sort(mean.arrivals, decreasing = TRUE)[1:n]
+subset.id <- unique(arrivals$id)[rowSums(sapply(X = subset.mean,
+                                                FUN = function(x) {
+                                                    mean.arrivals == x
+                                                }))==1]
+subset.index <- c(sapply(X = subset.id,
+                         FUN = function(x) {
+                             which(arrivals$id == x)
+                         }))
+arrivals.sub <- arrivals[subset.index, ]
+arrivals.single <- arrivals[arrivals$id == subset.id[1], ]

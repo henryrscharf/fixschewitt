@@ -1,0 +1,52 @@
+
+R version 3.1.1 (2014-07-10) -- "Sock it to Me"
+Copyright (C) 2014 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+Loading required package: grid
+Loading required package: lattice
+Loading required package: survival
+Loading required package: stats
+Loading required package: utils
+Loading required package: graphics
+Loading required package: splines
+Loading required package: Formula
+
+Attaching package: ‘Hmisc’
+
+The following objects are masked from ‘package:base’:
+
+    format.pval, round.POSIXt, trunc.POSIXt, units
+
+Loading required package: grDevices
+
+Welcome at Mon Nov 17 11:28:25 2014 
+> load("~/Google Drive/statistics/bicycle_sharing/citibike_new_york/arrivals_attributes.RData")
+> 
+> system.time(
++     bike.glm <- glmer(arrivals ~ as.factor(hour) +
++                                  as.factor(date) +
++                                  latitude +
++                                  longitude +
++                                  (1|id),
++                       data = arrivals,
++                       family = "poisson")
++     )
+Error in system.time(bike.glm <- glmer(arrivals ~ as.factor(hour) + as.factor(date) +  : 
+  could not find function "glmer"
+Timing stopped at: 0 0 0 
+Execution halted

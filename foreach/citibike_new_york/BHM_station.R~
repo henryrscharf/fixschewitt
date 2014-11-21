@@ -1,0 +1,54 @@
+library(ggplot2)
+setwd("~/Google Drive/statistics/bicycle_sharing/citibike_new_york/")
+
+## pick station to deal with and look at number of arrivals by hour
+id <- 72
+newyork.id <- newyork[newyork$end.station.id == id, ]
+arrivals <- sapply(1:31,
+                   FUN = function(x) {
+                       out <- NULL
+                       for (y in 0:23) {
+                           out <- c(out,
+                                    dim(newyork.id[newyork.id$startdate == x &
+                                                        newyork.id$starthour == y, ])[1])
+                       }
+                       return(t(out))
+                   })
+arrivals.df <- data.frame("arrivals" = as.numeric(arrivals),
+                          "date" = sort(rep(1:31, 24)),
+                          "hour" = rep(1:24, 31))
+weekends <- (arrivals.df$date %% 7 == 3 |
+            arrivals.df$date %% 7 == 4)
+arrivals.df <- cbind(arrivals.df, weekends)
+
+library(splines)
+## weekDAYS by date or by hour - definite bimodal trends
+smooth.arrivals.hr <- qplot(x = hour,
+                            y = arrivals,
+                            data = arrivals.df[arrivals.df$weekends == FALSE, ]) +
+    geom_smooth(method = "lm", formula = y ~ ns(x, 7))
+smooth.arrivals.date <- qplot(x = date,
+                              y = arrivals,
+                              data = arrivals.df[arrivals.df$weekends == FALSE, ]) +
+    geom_smooth(method = "lm", formula = y ~ 1)
+## date
+smooth.arrivals.hr + facet_wrap(~date)
+
+## hour
+smooth.arrivals.date + facet_wrap(~hour)
+
+## weekENDS - bimodality is mostly gone!
+smooth.arrivals.hr <- qplot(x = hour,
+                            y = arrivals,
+                            data = arrivals.df[arrivals.df$weekends == TRUE, ]) +
+    geom_smooth(method = "lm", formula = y ~ ns(x, 7))
+smooth.arrivals.date <- qplot(x = date,
+                              y = arrivals,
+                              data = arrivals.df[arrivals.df$weekends == TRUE, ]) +
+    geom_smooth(method = "lm", formula = y ~ 1)
+## date
+smooth.arrivals.hr + facet_wrap(~date)
+
+## hour
+smooth.arrivals.date + facet_wrap(~hour)
+

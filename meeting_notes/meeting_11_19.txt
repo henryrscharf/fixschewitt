@@ -1,0 +1,4 @@
+graph of speed up over several n?
+glmnet and bigrf both depend on foreach
+reverse suggests?
+font color for functions/commands unique to packages/methods?

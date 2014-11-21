@@ -1,0 +1,17 @@
+#########################
+## HENRY SCHARF        ##
+## UPDATED: 11/20/2014 ##
+#########################
+source("~/Google Drive/statistics/bicycle_sharing/citibike_new_york/EDA/subsetting_arrivals_attributes.R")
+
+K <- 100
+N <- dim(arrivals.sub)[1]
+
+cv.samples <- list()
+leftovers <- 1:N
+for (i in 1:(K - 1)) {
+    size <- ceiling(N/K)
+    cv.samples[[i]] <- sample(leftovers, size = size)
+    leftovers <- leftovers[-cv.samples[[i]]]
+}
+

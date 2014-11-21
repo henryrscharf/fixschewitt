@@ -1,0 +1,33 @@
+source(file = "~/Google Drive/statistics/bicycle_sharing/citibike_new_york/EDA/glm_bikes.R")
+## residuals
+ggplot(data = arrivals.sub,
+       aes(x = hour,
+           y = abs(fitted(bike.glm) - arrivals))) +
+    geom_point(aes(color = as.factor(id))) +
+    geom_smooth(aes(group = weekend))
+
+## residuals big
+ggplot(data = arrivals.sub,
+       aes(x = hour,
+           y = abs(fitted(bike.big.glm) - arrivals))) +
+    geom_point(aes(color = as.factor(id))) +
+    geom_smooth(aes(group = weekend))
+
+## fitted values
+ggplot(data = arrivals.sub,
+       aes(x = hour,
+           y = fitted(big.bike.glmm),
+           color = id,
+           group = weekend)) +
+    geom_path(aes(color = as.factor(id),
+                   pch = weekend))
+
+## fitted values
+ggplot(data = arrivals.sub,
+       aes(x = hour,
+           y = fitted(bike.big.glmm),
+           color = id,
+           group = weekend)) +
+    geom_smooth(aes(color = as.factor(id),
+                   pch = weekend)) +
+    facet_grid(facets = id ~ .)

@@ -34,15 +34,16 @@ Embarassingly parallel tasks
 type: sub-section
 
 - computational tasks which involve many, separate, independently executable calculations
+
 - common statistical examples of embarassingly parallel processes: 
     - bootstrapping
     - cross-validation 
     - simulating independent random variables (`dorng`)
-    
-***
+
 - non-parallel processes: 
     - MCMC algorithms 
     - stepwise model selection (e.g.: `step()`)
+
 - For loops that do not explicitly involve dependent calculations are wasteful, especially if we have multiple processors available
 - Perhaps even worse, the time cost of using a wasteful approach can put some useful statistical tools beyond our reach!
 
@@ -112,7 +113,7 @@ system.time(
 
 ```
 elapsed 
-  0.035 
+  0.028 
 ```
 
 
@@ -128,7 +129,7 @@ system.time(
 
 ```
 elapsed 
-  0.028 
+  0.024 
 ```
 
 ## Why do we think we can do better?
@@ -155,7 +156,7 @@ system.time(
 
 ```
 elapsed 
-  0.062 
+  0.053 
 ```
 
 
