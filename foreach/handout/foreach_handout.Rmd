@@ -182,6 +182,10 @@ system.time(
     
 
 # iterators
+Important consequence of the `foreach` loop above: the elements in the resulting matrix are NOT in order. For our purposes, this is fine, since we're aggregating the different estimates of error based on each fold. However, sometimes we need to get the calculations back in a specific order.
+
+For example, when pre-processing this data I...
+
 Sometimes the list or vector that we are iterating over (in the above case, the vector 1:N) can be a very large object. In our case, the vector is quite reasonable in size, but perhaps the object we were iterating over was a multi-dimensional object, with many values, and a high level of precision. In this case, we'd be storing a massive object, which could potentiall fill up our useable memory and slow things down. We could save memory by only keeping the piece of our list we need for a given calculation, and dumping the rest. This is the idea behind the `iterators` package in R.
 
 
