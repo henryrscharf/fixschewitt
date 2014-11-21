@@ -1,6 +1,5 @@
-Using `foreach`
 ========================================================
-title: false
+title: Using foreach
 author: Henry Scharf
 css: style_rainbow_brewer_11.css
 font-family: 'Lato'
@@ -113,7 +112,7 @@ system.time(
 
 ```
 elapsed 
-  0.028 
+  0.044 
 ```
 
 
@@ -129,7 +128,7 @@ system.time(
 
 ```
 elapsed 
-  0.024 
+  0.028 
 ```
 
 ## Why do we think we can do better?
@@ -156,7 +155,7 @@ system.time(
 
 ```
 elapsed 
-  0.053 
+  0.062 
 ```
 
 
