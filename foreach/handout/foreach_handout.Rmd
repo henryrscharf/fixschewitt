@@ -5,13 +5,16 @@ date: "November 20, 2014"
 output:
   html_document:
     css: style_rainbow_brewer_11.css
+    keep_md: yes
     number_sections: yes
     theme: readable
+    highlight: tango
     toc: yes
   pdf_document:
     toc: yes
 ---
 
+<!---
 ## THOUGHTS: 
 - need something more compelling for `iterators`
 - more complicated example for `.combine`? mean?
@@ -20,13 +23,22 @@ output:
 - model search? random forest? svm? other ML topics?
 - references
 - dorng in my bootstrap?
+--->
 
 
 ```{r setup, include=FALSE}
 # set global chunk options
 library(knitr)
-opts_chunk$set(cache=FALSE)
+opts_chunk$set(cache=TRUE)
+library(highr)
+cmd_mine = highr:::cmd_html
+cmd_mine[rownames(cmd_mine)=="NUM_CONST", 1] <- '<span class="three">'
+opts_knit$set(highr.opts = list(markup = cmd_mine))
+cmd_mine
+sum(1:2)
 ```
+# testing slide
+<span class='three'>class three</span>
 
 # Why?
 ### Embarassingly parallel tasks
@@ -66,8 +78,9 @@ We are going to look at data from the New York City bikeshare program (Citibike)
 Goal: find a model which can offer good prediction. Start with a few plausible models and use K fold cross validation to decide which one to use.
 
 ## some nice figures
-<img src = "../fig/map_top7.pdf">
-<img src = "../fig/top7_average_day.pdf">
+<img src = "../fig/map_top7.png">
+<img src = "../fig/top7_average_day.png">
+<---! loess smoother --->
 
 # Fitting generalized linear models and extracting prediction error
 We now suppose that we're considering three increasingly complex models of the arrival behavior. In order to compare the three models prediction error, we'll use K fold cross validation, where we use the same folds for all three models. 
@@ -110,9 +123,11 @@ get.errs <- function(test.set = NULL,
 }
 ```
 
-<img src = "../fig/predictions_sml.pdf">
-<img src = "../fig/predictions_med.pdf">
-<img src = "../fig/predictions_big.pdf">
+<img src="../fig/fit_all.png">
+
+<img src="../fig/predictions_sml.png">
+<img src="../fig/predictions_med.png">
+<img src="../fig/predictions_big.png">
 
 Next, we make our K-fold test sets (and implicitly, our training sets):
 ```{r CV_test_sets}
@@ -182,12 +197,27 @@ system.time(
     
 
 # iterators
-Important consequence of the `foreach` loop above: the elements in the resulting matrix are NOT in order. For our purposes, this is fine, since we're aggregating the different estimates of error based on each fold. However, sometimes we need to get the calculations back in a specific order.
-
-For example, when pre-processing this data I...
-
 Sometimes the list or vector that we are iterating over (in the above case, the vector 1:N) can be a very large object. In our case, the vector is quite reasonable in size, but perhaps the object we were iterating over was a multi-dimensional object, with many values, and a high level of precision. In this case, we'd be storing a massive object, which could potentiall fill up our useable memory and slow things down. We could save memory by only keeping the piece of our list we need for a given calculation, and dumping the rest. This is the idea behind the `iterators` package in R.
 
+## Our same example with an iterator instead of a list
 
-### Our same example with an iterator instead of a list
+```{r iterators_memory}
+library(iterators)
+registerDoParallel(cl = 4)
+system.time(
+    err.foreach.iter <- foreach(x = iter(cv.test.sets, by = "col"),
+                               .inorder = FALSE,
+                               .combine = "cbind") %dopar%
+                        get.errs(test.set = x,
+                                    discarded = discarded)
+    )
+```
+
+# Fix up the following code 
+
+```{r fix_up, eval=FALSE}
+random_
+registerDoParallel(cl = __)
+
+```
 
