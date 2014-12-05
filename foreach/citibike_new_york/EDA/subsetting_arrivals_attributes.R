@@ -39,3 +39,5 @@ subset.index <- c(sapply(X = subset.id,
                          }))
 arrivals.sub <- arrivals[subset.index, ]
 arrivals.single <- arrivals[arrivals$id == subset.id[1], ]
+
+save(arrivals.sub, file = "~/git/fixschewitt/foreach/citibike_new_york/EDA/arrivals_subset.RData")
