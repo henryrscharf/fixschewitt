@@ -2,7 +2,7 @@
 ## HENRY SCHARF        ##
 ## UPDATED: 12/02/2014 ##
 #########################
-source("~/Google Drive/statistics/bicycle_sharing/citibike_new_york/EDA/subsetting_arrivals_attributes.R")
+source("~/git/fixschewitt/foreach/citibike_new_york/EDA/subsetting_arrivals_attributes.R")
 
 lq.loss <- function(y, y.hat, q = 1){(abs(y - y.hat))^q}
 get.errs <- function(test.set = NULL,
@@ -20,8 +20,7 @@ get.errs <- function(test.set = NULL,
                    data = arrivals.sub[-c(discarded, test.set), ],
                    family = "poisson")
     big.glm <- glm(arrivals ~
-                   bs(hour, degree = 4)*weekend
-                   + bs(hour, degree = 4)*as.factor(id),
+                   bs(hour, degree = 4)*weekend*as.factor(id),
                    data = arrivals.sub[-c(discarded, test.set), ],
                    family = "poisson")
     sml.err <- mean(lq.loss(predict(object = sml.glm,
@@ -39,10 +38,10 @@ get.errs <- function(test.set = NULL,
                                     type = "response"),
                             arrivals.sub[test.set, 7],
                             q = q))
-    return(c(sml.err, med.err, big.K))
+    return(c(sml.err, med.err, big.err))
 }
 
-err <- 50
+K <- 50
 N <- dim(arrivals.sub)[1]
 
 ## kill off 8 observations and make cv test sets
@@ -52,14 +51,15 @@ cv.test.sets <- matrix(sample((1:N)[-discarded], size = N - 8), ncol = K)
 
 ## 13ish seconds
 library(foreach)
-registerDoParallel(cl = 4)
+library(doParallel)
+registerDoParallel(cl = 2)
 system.time(
     err.foreach <- foreach(i=1:K,
                            .inorder = FALSE,
                            .combine = "cbind") %dopar% {
                                get.errs(test.set = cv.test.sets[, i],
                                         discarded = discarded,
-                                        q = 2)
+                                        q = 1)
                            }
     )
 
@@ -67,7 +67,7 @@ err <- data.frame(t(err.foreach))
 names(err) <- c("sml", "med", "big")
 library(RColorBrewer)
 pal <- brewer.pal(n = 3, name = "Dark2")
-png(filename = "~/git/fixschewitt/foreach/fig/errors_sml_med_big_density.png")
+## png(filename = "~/git/fixschewitt/foreach/fig/errors_sml_med_big_density.png")
 plot(density(err$sml), col = pal[1], lwd = 2,
      main = "distribution of absolute errors",
      xlab = "size of error",
@@ -78,11 +78,20 @@ legend("topright",
        legend = c("sml", "med", "big"),
        lty = 1, lwd = 2,
        col = pal)
-dev.off()
+## dev.off()
 
-png(filename = "~/git/fixschewitt/foreach/fig/errors_boxplots.png")
-boxplot(err)
-dev.off()
+## png(filename = "~/git/fixschewitt/foreach/fig/errors_boxplots.png")
+## boxplot(err)
+## dev.off()
+
+## gg version
+err.gg <- data.frame("errors" = c(t(err.foreach)),
+                     "model" = c(rep("sml", K), rep("med", K), rep("big", K)))
+ggplot(data = err.gg, aes(x = errors, color = model, group = model)) +
+    geom_line(stat = "density", lwd = 0.8)
+ggsave(filename = "~/git/fixschewitt/foreach/fig/error_densities.png",
+       width = 10, height = 6)
+
 
 ## mean.err <- apply(err.foreach, 1, mean)
 ## var.err <- apply(err.foreach, 1, var)

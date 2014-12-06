@@ -1,0 +1,623 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% Set line spacing
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\ErrorTok}[1]{\textbf{{#1}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx}
+% Redefine \includegraphics so that, unless explicit options are
+% given, the image width will not exceed the width of the page.
+% Images get their normal width if they fit onto the page, but
+% are scaled down if they would overflow the margins.
+\makeatletter
+\def\ScaleIfNeeded{%
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+\let\Oldincludegraphics\includegraphics
+{%
+ \catcode`\@=11\relax%
+ \gdef\includegraphics{\@ifnextchar[{\Oldincludegraphics}{\Oldincludegraphics[width=\ScaleIfNeeded]}}%
+}%
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Henry Scharf},
+            pdftitle={Moving from for to foreach},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+\setlength{\droptitle}{-2em}
+  \title{Moving from for to foreach}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Henry Scharf}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{December 3, 2014}
+
+
+
+
+\begin{document}
+
+\maketitle
+
+
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\section{THOUGHTS and TODO:}\label{thoughts-and-todo}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  get data online. Host on my site?
+\item
+  need something more compelling for \texttt{iterators}
+\item
+  more complicated example for \texttt{.combine}? mean?
+\item
+  do their own code? fix some code?
+\item
+  images for heavy analysis?
+\item
+  model search? random forest? svm? other ML topics?
+\item
+  references
+\item
+  dorng in my bootstrap?
+\end{itemize}
+
+\section{testing slide}\label{testing-slide}
+
+{class one}
+
+{class two}
+
+{class three}
+
+{class four}
+
+{class five}
+
+{class six}
+
+{class seven}
+
+{class eight}
+
+{class nine}
+
+{class ten}
+
+{class eleven}
+
+{class twelve}
+
+\section{Why?}\label{why}
+
+\subsection{Embarassingly parallel
+tasks}\label{embarassingly-parallel-tasks}
+
+These are computational tasks which involve many separate, independently
+executable calculations. Some common statistical examples of
+embarassingly {parallel} processes:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  bootstrapping
+\item
+  cross-validation
+\item
+  simulating independent random variables (\texttt{dorng})
+\end{itemize}
+
+In contrast, some sequential or {non-parallel} processes:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  MCMC algorithms
+\item
+  stepwise model selection (e.g.: \texttt{step()})
+\end{itemize}
+
+For loops that do not explicitly involve dependent calculations are
+wasteful, especially if we have multiple processors available. Perhaps
+even worse, the time cost of using a wasteful approach can put some
+useful statistical tools beyond our reach!
+
+\subsection{Options in R}\label{options-in-r}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  changing from a for loop to one of the \texttt{apply()} functions can
+  help, but still doesn't use multiple processors
+\item
+  \texttt{parallel} package (thanks, Miranda!)
+\item
+  don't use R
+\item
+  \texttt{foreach} packages!
+\end{itemize}
+
+\subsection{Why foreach?}\label{why-foreach}
+
+We would like to find a way to make use of our whole computer, and make
+useful tasks like bootstrapping available to use, but without having to
+invest large amounts of time in learning new programming languages.
+Enter \texttt{foreach}, which keeps the structure of a for loop, but
+allows us to drop two key assumptions:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  sequentiality
+\item
+  single processor architecture
+\end{itemize}
+
+{\textbf{Our goal}}: transform a traditional for loop into a foreach
+loop We will begin with a simple chunk of R code involving a for loop,
+and transform it. Along the way, we'll take a look at the equivalent
+computation done with an \texttt{apply()} function, and see that using
+foreach and multiple processors outperforms this too.
+
+\section{The data and research
+question}\label{the-data-and-research-question}
+
+We are going to look at data from the New York City bikeshare program
+(Citibike).
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  7 busiest (on average) locations from May 2014
+\item
+  response is \# of arrivals each hour of every day in the month
+\item
+  covariates are hour of the day, and whether the day is a weekend
+\end{itemize}
+
+We want to find a model which can offer good prediction. Start with a
+few plausible models and use K fold cross validation to decide which one
+to use.
+
+\subsection{some nice figures}\label{some-nice-figures}
+
+\section{Fitting GLMs and extracting prediction
+error}\label{fitting-glms-and-extracting-prediction-error}
+
+We now suppose that we're considering three increasingly complex models
+of the arrival behavior. In order to compare three candidate models
+prediction error, we'll use K-fold cross validation, where we use the
+same folds for all three models.
+
+Here's some familiar code that sets things up:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{load}\NormalTok{(}\KeywordTok{url}\NormalTok{(}\StringTok{"http://www.stat.colostate.edu/~scharfh/CSP_parallel/data/arrivals_subset.RData"}\NormalTok{))}
+\NormalTok{lq.loss <-}\StringTok{ }\NormalTok{function(y, y.hat, }\DataTypeTok{q =} \DecValTok{1}\NormalTok{) \{(}\KeywordTok{abs}\NormalTok{(y -}\StringTok{ }\NormalTok{y.hat))^q\}}
+\NormalTok{get.errs <-}\StringTok{ }\NormalTok{function(}\DataTypeTok{test.set =} \OtherTok{NULL}\NormalTok{,}
+                     \DataTypeTok{discarded =} \OtherTok{NULL}\NormalTok{,}
+                     \DataTypeTok{q =} \NormalTok{q) \{}
+    \NormalTok{sml.glm <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(arrivals ~}
+\StringTok{                   }\KeywordTok{bs}\NormalTok{(hour, }\DataTypeTok{degree =} \DecValTok{4}\NormalTok{)}
+                   \NormalTok{+}\StringTok{ }\NormalTok{weekend}
+                   \NormalTok{+}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(id),}
+                   \DataTypeTok{data =} \NormalTok{arrivals.sub[-}\KeywordTok{c}\NormalTok{(discarded, test.set), ],}
+                   \DataTypeTok{family =} \StringTok{"poisson"}\NormalTok{)}
+    \NormalTok{med.glm <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(arrivals ~}
+\StringTok{                   }\KeywordTok{bs}\NormalTok{(hour, }\DataTypeTok{degree =} \DecValTok{4}\NormalTok{)*weekend}
+                   \NormalTok{+}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(id),}
+                   \DataTypeTok{data =} \NormalTok{arrivals.sub[-}\KeywordTok{c}\NormalTok{(discarded, test.set), ],}
+                   \DataTypeTok{family =} \StringTok{"poisson"}\NormalTok{)}
+    \NormalTok{big.glm <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(arrivals ~}
+\StringTok{                   }\KeywordTok{bs}\NormalTok{(hour, }\DataTypeTok{degree =} \DecValTok{4}\NormalTok{)*weekend}
+                   \NormalTok{+}\StringTok{ }\KeywordTok{bs}\NormalTok{(hour, }\DataTypeTok{degree =} \DecValTok{4}\NormalTok{)*}\KeywordTok{as.factor}\NormalTok{(id),}
+                   \DataTypeTok{data =} \NormalTok{arrivals.sub[-}\KeywordTok{c}\NormalTok{(discarded, test.set), ],}
+                   \DataTypeTok{family =} \StringTok{"poisson"}\NormalTok{)}
+    \NormalTok{sml.err <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(}\KeywordTok{lq.loss}\NormalTok{(}\KeywordTok{predict}\NormalTok{(}\DataTypeTok{object =} \NormalTok{sml.glm,}
+                                    \DataTypeTok{newdata =} \NormalTok{arrivals.sub[test.set, -}\DecValTok{7}\NormalTok{],}
+                                    \DataTypeTok{type =} \StringTok{"response"}\NormalTok{),}
+                            \NormalTok{arrivals.sub[test.set, }\DecValTok{7}\NormalTok{],}
+                            \DataTypeTok{q =} \NormalTok{q))}
+    \NormalTok{med.err <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(}\KeywordTok{lq.loss}\NormalTok{(}\KeywordTok{predict}\NormalTok{(}\DataTypeTok{object =} \NormalTok{med.glm,}
+                                    \DataTypeTok{newdata =} \NormalTok{arrivals.sub[test.set, -}\DecValTok{7}\NormalTok{],}
+                                    \DataTypeTok{type =} \StringTok{"response"}\NormalTok{),}
+                            \NormalTok{arrivals.sub[test.set, }\DecValTok{7}\NormalTok{],}
+                            \DataTypeTok{q =} \NormalTok{q))}
+    \NormalTok{big.err <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(}\KeywordTok{lq.loss}\NormalTok{(}\KeywordTok{predict}\NormalTok{(}\DataTypeTok{object =} \NormalTok{big.glm,}
+                                    \DataTypeTok{newdata =} \NormalTok{arrivals.sub[test.set, -}\DecValTok{7}\NormalTok{],}
+                                    \DataTypeTok{type =} \StringTok{"response"}\NormalTok{),}
+                            \NormalTok{arrivals.sub[test.set, }\DecValTok{7}\NormalTok{],}
+                            \DataTypeTok{q =} \NormalTok{q))}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{c}\NormalTok{(sml.err, med.err, big.err))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Next, we make our K-fold test sets (and implicitly, our training sets):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{K <-}\StringTok{ }\DecValTok{50}
+\NormalTok{N <-}\StringTok{ }\KeywordTok{dim}\NormalTok{(arrivals.sub)[}\DecValTok{1}\NormalTok{]}
+
+\NormalTok{## kill off 8 observations and make cv test sets}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1985}\NormalTok{)}
+\NormalTok{discarded <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\NormalTok{:N, }\DataTypeTok{size =} \DecValTok{8}\NormalTok{)}
+\NormalTok{cv.test.sets <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{sample}\NormalTok{((}\DecValTok{1}\NormalTok{:N)[-discarded], }\DataTypeTok{size =} \NormalTok{N -}\StringTok{ }\DecValTok{8}\NormalTok{), }\DataTypeTok{ncol =} \NormalTok{K)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{K-fold CV with a for loop}\label{k-fold-cv-with-a-for-loop}
+
+Using a naive for loop, we could implement this as:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{err.for <-}\StringTok{ }\OtherTok{NULL}
+\KeywordTok{system.time}\NormalTok{(}
+    \NormalTok{for (i in }\DecValTok{1}\NormalTok{:K) \{}
+        \NormalTok{err.for <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(err.for, }\KeywordTok{get.errs}\NormalTok{(}\DataTypeTok{test.set =} \NormalTok{cv.test.sets[, i],}
+                                           \DataTypeTok{discarded =} \NormalTok{discarded,}
+                                           \DataTypeTok{q =} \DecValTok{1}\NormalTok{))}
+        \NormalTok{\}}
+    \NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    user  system elapsed 
+##  19.625   0.894  20.940
+\end{verbatim}
+
+\subsection{K-fold CV with an apply
+function}\label{k-fold-cv-with-an-apply-function}
+
+If you're good with \texttt{apply()} functions you might upgrade to
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## apply version}
+\KeywordTok{system.time}\NormalTok{(}
+    \NormalTok{err.apply <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DataTypeTok{X =} \DecValTok{1}\NormalTok{:K, }
+                        \DataTypeTok{FUN =} \NormalTok{function(i) \{}
+                            \KeywordTok{get.errs}\NormalTok{(}\DataTypeTok{test.set =} \NormalTok{cv.test.sets[, i],}
+                                     \DataTypeTok{discarded =} \NormalTok{discarded,}
+                                     \DataTypeTok{q =} \DecValTok{1}\NormalTok{)}
+                            \NormalTok{\}}
+                        \NormalTok{)}
+    \NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    user  system elapsed 
+##  18.707   0.743  19.532
+\end{verbatim}
+
+Neither of the first two methods take advantage of multiple processors.
+While \texttt{apply()} functions avoid the inherently sluggish nature of
+for loops in \texttt{R}, they are still ignorant of the processor
+structure. We want to chop the job into halves, fourths, etc. and use
+the \emph{whole} computer!
+
+\subsection{K-fold CV with a foreach
+loop}\label{k-fold-cv-with-a-foreach-loop}
+
+Here is the same computation written with a \texttt{foreach()} loop
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## foreach version}
+\KeywordTok{library}\NormalTok{(foreach)}
+\KeywordTok{library}\NormalTok{(doParallel)}
+\KeywordTok{registerDoParallel}\NormalTok{(}\DataTypeTok{cl =} \DecValTok{2}\NormalTok{)}
+\KeywordTok{system.time}\NormalTok{(}
+    \NormalTok{err.foreach <-}\StringTok{ }\KeywordTok{foreach}\NormalTok{(}\DataTypeTok{i=}\DecValTok{1}\NormalTok{:K,}
+                           \DataTypeTok{.inorder =} \OtherTok{FALSE}\NormalTok{,}
+                           \DataTypeTok{.combine =} \StringTok{"cbind"}\NormalTok{) %dopar%}\StringTok{ }\NormalTok{\{}
+                               \KeywordTok{get.errs}\NormalTok{(}\DataTypeTok{test.set =} \NormalTok{cv.test.sets[, i],}
+                                        \DataTypeTok{discarded =} \NormalTok{discarded,}
+                                        \DataTypeTok{q =} \DecValTok{1}\NormalTok{)}
+                               \NormalTok{\}}
+    \NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    user  system elapsed 
+##   10.79    0.51   11.60
+\end{verbatim}
+
+\section{Components of a foreach
+loop}\label{components-of-a-foreach-loop}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{\%do\%} performs the calculations in order, and so uses only
+  one processor. \texttt{\%dopar\%} is what we generally wish to use.
+\item
+  arguments to consider
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    \texttt{.combine} can take on the intuitive values \texttt{c} or
+    \texttt{cbind}, as well as more complex functions. Default is to
+    return a list.
+  \item
+    \texttt{.inorder} is a \texttt{TRUE/FALSE} argument. Required to be
+    \texttt{FALSE} for \texttt{\%dopar\%} to work.
+  \end{itemize}
+\item
+  Notice that unlike \texttt{apply()} functions, the \texttt{foreach}
+  takes an expression instead of a function.
+\end{itemize}
+
+\section{Results}\label{results}
+
+\includegraphics{../fig/errerrs.png}
+
+\section{Additional topics}\label{additional-topics}
+
+\subsection{iterators}\label{iterators}
+
+Sometimes the list or vector that we are iterating over (in the above
+case, the vector 1:N) can be a very large object. In our case, the
+vector is quite reasonable in size, but perhaps the object we were
+iterating over was a multi-dimensional object, with many values, and a
+high level of precision. In this case, we'd be storing a massive object,
+which could potentiall fill up our useable memory and slow things down.
+We could save memory by only keeping the piece of our list we need for a
+given calculation, and dumping the rest. This is the idea behind the
+\texttt{iterators} package in R.
+
+Here is our same example with an iterator instead of a list.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(iterators)}
+\KeywordTok{registerDoParallel}\NormalTok{(}\DataTypeTok{cl =} \DecValTok{2}\NormalTok{)}
+\KeywordTok{system.time}\NormalTok{(}
+    \NormalTok{err.foreach.iter <-}\StringTok{ }\KeywordTok{foreach}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{iter}\NormalTok{(cv.test.sets, }\DataTypeTok{by =} \StringTok{"col"}\NormalTok{),}
+                               \DataTypeTok{.inorder =} \OtherTok{FALSE}\NormalTok{,}
+                               \DataTypeTok{.combine =} \StringTok{"cbind"}\NormalTok{) %dopar%}\StringTok{ }\NormalTok{\{}
+                                   \KeywordTok{get.errs}\NormalTok{(}\DataTypeTok{test.set =} \NormalTok{x,}
+                                            \DataTypeTok{discarded =} \NormalTok{discarded,}
+                                            \DataTypeTok{q =} \DecValTok{1}\NormalTok{)}
+                                   \NormalTok{\}}
+    \NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    user  system elapsed 
+##  22.230   0.909  11.825
+\end{verbatim}
+
+\subsection{Random numbers}\label{random-numbers}
+
+When parallelizing a process which generates random numbers we need to
+be careful, since we aren't guaranteed that \texttt{foreach} will handle
+this properly. We could wind up getting numbers that aren't in fact
+random! Moreover, if we want to be able to reproduce an analysis which
+uses a random number generator, the usual \texttt{set.seed()} isn't
+guaranteed to work.
+
+Fortunately, there is \texttt{doRNG}. There are many ways to implement
+this package, the two easiest of which are:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(doRNG)}
+\KeywordTok{registerDoParallel}\NormalTok{(}\DataTypeTok{cl =} \DecValTok{2}\NormalTok{)}
+\NormalTok{blah1 <-}\StringTok{ }\KeywordTok{foreach}\NormalTok{(}\DataTypeTok{x =} \DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{, }
+                 \DataTypeTok{.options.RNG =} \DecValTok{1985}\NormalTok{,}
+                 \DataTypeTok{.combine =} \StringTok{'c'}\NormalTok{) %dorng%}\StringTok{ }\NormalTok{\{}
+                     \KeywordTok{rnorm}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+                     \NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+and
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{registerDoParallel}\NormalTok{(}\DataTypeTok{cl =} \DecValTok{2}\NormalTok{)}
+\KeywordTok{registerDoRNG}\NormalTok{(}\DataTypeTok{seed =} \DecValTok{1985}\NormalTok{)}
+\NormalTok{blah2 <-}\StringTok{ }\KeywordTok{foreach}\NormalTok{(}\DataTypeTok{x =} \DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{,}
+                 \DataTypeTok{.combine =} \StringTok{'c'}\NormalTok{) %dopar%}\StringTok{ }\NormalTok{\{}
+    \KeywordTok{rnorm}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+    \NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Note that this gives reproducible results!
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sum}\NormalTok{(blah1 !=}\StringTok{ }\NormalTok{blah2) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0
+\end{verbatim}
+
+\subsection{packages that support
+foreach}\label{packages-that-support-foreach}
+
+Some packages come with parallel functionality built in via
+\texttt{foreach}.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{glmnet}
+\item
+  \texttt{gam}
+\item
+  \texttt{ggmcmc}
+\item
+  \texttt{plyr}
+\item
+  many others
+\end{itemize}
+
+\section{Exercise: fix up the following
+code}\label{exercise-fix-up-the-following-code}
+
+The following calculation wouldn't typically require parallelization
+because it isn't a huge task, however we use it for practice's sake.
+
+Suppose we wish to figure out which day in May had the most combined
+arrivals across these seven stations. Here's a function to get started,
+you're welcome to scrap it for your own, or use it and fill in the gaps
+in what follows.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sum.arrivals <-}\StringTok{ }\NormalTok{function(}\DataTypeTok{date =} \OtherTok{NULL}\NormalTok{,}
+                         \DataTypeTok{id =} \OtherTok{NULL}\NormalTok{)\{}
+    \NormalTok{sum.arr <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(arrivals.sub$arrivals[arrivals.sub$date ==}\StringTok{ }\NormalTok{date &}
+\StringTok{                                         }\NormalTok{arrivals.sub$id ==}\StringTok{ }\NormalTok{id])}
+    \KeywordTok{return}\NormalTok{(sum.arr)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+The following code needs some help. When nesting \texttt{foreach} loops
+(see this vignette), we need to use \texttt{\%:\%}. Fill in the missing
+parts to make the code work.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{system.time}\NormalTok{(}
+    \KeywordTok{registerDoParallel}\NormalTok{(}\DataTypeTok{cl =} \DecValTok{2}\NormalTok{)}
+    \NormalTok{busiest <-}\StringTok{ }\KeywordTok{foreach}\NormalTok{(}\DataTypeTok{date =} \NormalTok{___,}
+                       \DataTypeTok{._______ =} \OtherTok{FALSE}\NormalTok{,}
+                       \DataTypeTok{.combine =} \NormalTok{___) %:%}
+\StringTok{                           }\KeywordTok{foreach}\NormalTok{(}\DataTypeTok{id =} \KeywordTok{unique}\NormalTok{(arrivals.sub$id),}
+                                   \DataTypeTok{.inorder =} \NormalTok{______,}
+                                   \DataTypeTok{.combine =} \NormalTok{___) %dopar%}\StringTok{ }\NormalTok{\{}
+                                       \KeywordTok{sum.arrivals}\NormalTok{(}\DataTypeTok{date =} \NormalTok{date,}
+                                                    \DataTypeTok{id =} \NormalTok{id)}
+                                   \NormalTok{\}}
+                       \ErrorTok{\}}
+    \NormalTok{)}
+\KeywordTok{which}\NormalTok{(busiest==}\KeywordTok{max}\NormalTok{(busiest))    }
+\end{Highlighting}
+\end{Shaded}
+
+For something this small, the overhead of managing the parallelization
+means a regular nested for loop is quicker.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sum.arrivals <-}\StringTok{ }\NormalTok{function(}\DataTypeTok{date =} \OtherTok{NULL}\NormalTok{,}
+                         \DataTypeTok{id =} \OtherTok{NULL}\NormalTok{)\{}
+    \NormalTok{sum.arr <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(arrivals.sub$arrivals[arrivals.sub$date ==}\StringTok{ }\NormalTok{date &}
+\StringTok{                                         }\NormalTok{arrivals.sub$id ==}\StringTok{ }\NormalTok{id])}
+    \KeywordTok{return}\NormalTok{(sum.arr)}
+\NormalTok{\}}
+\NormalTok{busiest.for <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{31}\NormalTok{)}
+\KeywordTok{system.time}\NormalTok{(}
+    \NormalTok{for(date in }\DecValTok{1}\NormalTok{:}\DecValTok{31}\NormalTok{)\{}
+        \NormalTok{for(id in }\KeywordTok{unique}\NormalTok{(arrivals.sub$id))\{}
+            \NormalTok{busiest.for[date] <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(busiest.for[date],}
+                                     \KeywordTok{sum.arrivals}\NormalTok{(}\DataTypeTok{date =} \NormalTok{date, }\DataTypeTok{id =} \NormalTok{id))}
+        \NormalTok{\}}
+    \NormalTok{\}}
+    \NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    user  system elapsed 
+##   0.072   0.003   0.076
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{which}\NormalTok{(busiest.for==}\KeywordTok{max}\NormalTok{(busiest.for))    }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 20
+\end{verbatim}
+
+\end{document}

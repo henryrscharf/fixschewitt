@@ -2,32 +2,20 @@
 ## HENRY SCHARF        ##
 ## UPDATED: 11/20/2014 ##
 #########################
-source("~/Google Drive/statistics/bicycle_sharing/citibike_new_york/EDA/subsetting_arrivals_attributes.R")
+source("~/git/fixschewitt/foreach/citibike_new_york/EDA/subsetting_arrivals_attributes.R")
 
-system.time(
-    sml.glm <- glm(arrivals ~
-                   bs(hour, degree = 4)
-                   + weekend
-                   + as.factor(id),
-                   data = arrivals.sub,
-                   family = "poisson")
-    )
-summary(bike.glm)
-
-system.time(
-    med.glm <- glm(arrivals ~
-                    bs(hour, degree = 4)*weekend
-                    + as.factor(id),
-                    data = arrivals.sub,
-                    family = "poisson")
-    )
-summary(bike.glm)
-
-system.time(
-    big.glm <- glm(arrivals ~
-                   bs(hour, degree = 4)*weekend
-                   + bs(hour, degree = 4)*as.factor(id),
-                   data = arrivals.sub,
-                   family = "poisson")
-    )
-summary(bike.big.glm)
+sml.glm <- glm(arrivals ~
+               bs(hour, degree = 4)
+               + weekend
+               + as.factor(id),
+               data = arrivals.sub,
+               family = "poisson")
+med.glm <- glm(arrivals ~
+               bs(hour, degree = 4)*weekend
+               + as.factor(id),
+               data = arrivals.sub,
+               family = "poisson")
+big.glm <- glm(arrivals ~
+               bs(hour, degree = 4)*weekend*as.factor(id),
+               data = arrivals.sub,
+               family = "poisson")

@@ -1,0 +1,19 @@
+\contentsline {section}{THOUGHTS and TODO:}{1}{section*.2}
+\contentsline {section}{testing slide}{2}{section*.3}
+\contentsline {section}{Why?}{2}{section*.4}
+\contentsline {subsection}{Embarassingly parallel tasks}{2}{section*.5}
+\contentsline {subsection}{Options in R}{2}{section*.6}
+\contentsline {subsection}{Why foreach?}{3}{section*.7}
+\contentsline {section}{The data and research question}{3}{section*.8}
+\contentsline {subsection}{some nice figures}{3}{section*.9}
+\contentsline {section}{Fitting GLMs and extracting prediction error}{3}{section*.10}
+\contentsline {subsection}{K-fold CV with a for loop}{4}{section*.11}
+\contentsline {subsection}{K-fold CV with an apply function}{4}{section*.12}
+\contentsline {subsection}{K-fold CV with a foreach loop}{5}{section*.13}
+\contentsline {section}{Components of a foreach loop}{5}{section*.14}
+\contentsline {section}{Results}{6}{section*.15}
+\contentsline {section}{Additional topics}{6}{section*.16}
+\contentsline {subsection}{iterators}{6}{section*.17}
+\contentsline {subsection}{Random numbers}{7}{section*.18}
+\contentsline {subsection}{packages that support foreach}{7}{section*.19}
+\contentsline {section}{Exercise: fix up the following code}{8}{section*.20}

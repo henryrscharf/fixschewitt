@@ -1,0 +1,13 @@
+base
+doParallel
+foreach
+Formula
+ggplot2
+highr
+Hmisc
+iterators
+knitr
+lattice
+MASS
+R2HTML
+survival
