@@ -6,13 +6,13 @@ December 4, 2014
 
 # why?
 ## embarassingly parallel tasks {.build}
-<span class = 'eleven'>**parallel**</span> processes: 
+### <span class = 'eleven'>**parallel**</span> processes: 
 
 - bootstrapping
 - cross-validation 
 - simulating independent random variables (`dorng`)
 
-<span class = 'eleven'>**non-parallel**</span> processes:
+### <span class = 'eleven'>**non-parallel**</span> processes:
 
 - MCMC algorithms 
 - several types of model selection (e.g.: `step()` or the LARS algorithm for LASSO)
@@ -29,8 +29,8 @@ December 4, 2014
 - Without having to invest large amounts of time in learning new programming languages
 - <span class = 'ten'>**Our goal**</span>: transform a for loop into a foreach loop
 
-# data and research question
-## citibike nyc {.build}
+# <span class = "ten">example</span>: data and research question
+## citibike nyc
 <div class='columns-2'>
 **Goal**: predict arrival volume to inform management of bike stations
 
@@ -49,19 +49,34 @@ width = 550>
 alt = "busiest 7 stations"
 height = 615>
 
-# fitting GLMs and extracting prediction error | three models
-## the Goldilocks approach{.build}
+# fitting GLMs and extracting prediction error | the Goldilocks approach 
+##
+<div class = "centered"">
+<img src="../fig/fit_all.png"
+alt = "fit all"
+height = 615>
+</div>
 
-Use K-fold cross validation to compare prediction error.
-
-
+## Use K-fold cross validation to compare prediction error.
+Make our K-fold test sets (and implicitly, our training sets)
 
 ```r
 load(url("http://www.stat.colostate.edu/~scharfh/CSP_parallel/data/arrivals_subset.RData"))
+K <- 50
+N <- dim(arrivals.sub)[1]
+
+## for convenience kill off 8 observations (we have 5208) and make cv test sets
+set.seed(1985)
+discarded <- sample(1:N, size = 8)
+cv.test.sets <- matrix(sample((1:N)[-discarded], size = N - 8), ncol = K)
+```
+
+
+## for each fold, fit the model...
+
+```r
 lq.loss <- function(y, y.hat, q = 1) {(abs(y - y.hat))^q}
-get.errs <- function(test.set = NULL,
-                     discarded = NULL,
-                     q = 1) {
+get.errs <- function(test.set = NULL, discarded = NULL, q = 1) {
     sml.glm <- glm(arrivals ~
                    bs(hour, degree = 4)
                    + weekend
@@ -73,15 +88,15 @@ get.errs <- function(test.set = NULL,
                    + as.factor(id),
                    data = arrivals.sub[-c(discarded, test.set), ],
                    family = "poisson")
-```
-
-##
-
-```r
     big.glm <- glm(arrivals ~
                    bs(hour, degree = 4)*weekend*as.factor(id),
                    data = arrivals.sub[-c(discarded, test.set), ],
                    family = "poisson")
+```
+
+## ...and get the training error
+
+```r
     sml.err <- mean(lq.loss(predict(object = sml.glm,
                                     newdata = arrivals.sub[test.set, -7],
                                     type = "response"),
@@ -101,23 +116,6 @@ get.errs <- function(test.set = NULL,
 }
 ```
 
-## {.centered}
-<img src="../fig/fit_all.png"
-alt = "fit all"
-height = 615>
-
-## Make our K-fold test sets | and implicitly, our training sets
-
-```r
-K <- 50
-N <- dim(arrivals.sub)[1]
-
-## for convenience kill off 8 observations (we have 5208) and make cv test sets
-set.seed(1985)
-discarded <- sample(1:N, size = 8)
-cv.test.sets <- matrix(sample((1:N)[-discarded], size = N - 8), ncol = K)
-```
-
 ## K-fold CV with a for loop {.build}
 Using a naive for loop, we could implement this as:
 
@@ -134,7 +132,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  29.691   1.252  31.118
+##  28.400   1.157  29.757
 ```
 
 ## K-fold CV with an apply function {.build}
@@ -154,7 +152,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  29.322   1.172  30.655
+##  28.170   1.148  29.574
 ```
 
 Both of these assume a single processor architecture. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -182,7 +180,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  15.902   0.727  16.910
+##  15.300   0.712  16.379
 ```
 
 # the breakdown
@@ -205,11 +203,11 @@ system.time(
 # results
 <!--
 have knitr do the results - sucks 
-![plot of chunk errs](../fig/errs.png) 
+
 -->
 
 ## {.centered}
-<img src = "../fig/error_densities.png"
+<img src = "../fig/error_boxplots.png"
 alt = "error densities"
 height = 615
 align = 'middle'>
@@ -239,7 +237,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  31.403   1.459  16.427
+##  30.349   1.422  15.995
 ```
 <!--
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
@@ -344,7 +342,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.254   0.052   0.256
+##   0.283   0.066   0.256
 ```
 
 ```r
@@ -371,7 +369,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.074   0.006   0.080
+##   0.081   0.006   0.090
 ```
 
 ```r

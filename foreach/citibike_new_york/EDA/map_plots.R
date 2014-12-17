@@ -1,6 +1,6 @@
 #########################
 ## HENRY SCHARF        ##
-## UPDATED: 11/20/2014 ##
+## UPDATED: 12/09/2014 ##
 #########################
 
 source("~/Google Drive/statistics/bicycle_sharing/citibike_new_york/EDA/subsetting_arrivals_attributes.R")
@@ -28,10 +28,11 @@ ggplot(data = arrivals.sub,
        aes(x = hour, y = arrivals,
            color = as.factor(id),
            group = weekend)) +
-    geom_point() +
-    facet_grid(facets = id ~ weekend) +
-    geom_smooth()
-ggsave(filename = "top7_average_day.pdf")
+    geom_point(alpha = 0.3) +
+    scale_color_brewer(palette = "Dark2", guide = FALSE) +
+        facet_grid(facets = id ~ weekend)
+ggsave(filename = "~/git/fixschewitt/foreach/fig/top7_average_day.png",
+       width = 8, height = 8)
 
 ## ggplot(data = arrivals.sub,
 ##        aes(x = hour, y = arrivals,

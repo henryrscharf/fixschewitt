@@ -87,13 +87,20 @@ legend("topright",
 ## gg version
 err.gg <- data.frame("errors" = c(t(err.foreach)),
                      "model" = c(rep("sml", K), rep("med", K), rep("big", K)))
+
 ggplot(data = err.gg, aes(x = errors, color = model, group = model)) +
-    geom_line(stat = "density", lwd = 0.8)
+    geom_line(stat = "density", lwd = 0.8) +
+        geom_vline(xintercept = apply(err, 2, mean), alpha = 0.5)
 ggsave(filename = "~/git/fixschewitt/foreach/fig/error_densities.png",
        width = 10, height = 6)
 
+ggplot(data = err.gg, aes(y = errors, x = model, color = model)) +
+    geom_boxplot() +
+        theme(axis.ticks = element_blank(), axis.text.x = element_blank())
+ggsave(filename = "~/git/fixschewitt/foreach/fig/error_boxplots.png")
 
-## mean.err <- apply(err.foreach, 1, mean)
+
+## Mean.err <- apply(err.foreach, 1, mean)
 ## var.err <- apply(err.foreach, 1, var)
 ## err <- data.frame(t(err.foreach))
 ## names(err) <- c("sml", "med", "big")

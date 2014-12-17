@@ -22,13 +22,13 @@ opts_chunk$set(cache=FALSE)
 
 # why?
 ## embarassingly parallel tasks {.build}
-<span class = 'eleven'>**parallel**</span> processes: 
+### <span class = 'eleven'>**parallel**</span> processes: 
 
 - bootstrapping
 - cross-validation 
 - simulating independent random variables (`dorng`)
 
-<span class = 'eleven'>**non-parallel**</span> processes:
+### <span class = 'eleven'>**non-parallel**</span> processes:
 
 - MCMC algorithms 
 - several types of model selection (e.g.: `step()` or the LARS algorithm for LASSO)
@@ -45,8 +45,8 @@ opts_chunk$set(cache=FALSE)
 - Without having to invest large amounts of time in learning new programming languages
 - <span class = 'ten'>**Our goal**</span>: transform a for loop into a foreach loop
 
-# data and research question
-## citibike nyc {.build}
+# <span class = "ten">example</span>: data and research question
+## citibike nyc
 <div class='columns-2'>
 **Goal**: predict arrival volume to inform management of bike stations
 
@@ -65,10 +65,26 @@ width = 550>
 alt = "busiest 7 stations"
 height = 615>
 
-# fitting GLMs and extracting prediction error | three models
-## the Goldilocks approach{.build}
+# fitting GLMs and extracting prediction error | the Goldilocks approach 
+##
+<div class = "centered"">
+<img src="../fig/fit_all.png"
+alt = "fit all"
+height = 615>
+</div>
 
-Use K-fold cross validation to compare prediction error.
+## Use K-fold cross validation to compare prediction error.
+Make our K-fold test sets (and implicitly, our training sets)
+```{r CV_test_sets}
+load(url("http://www.stat.colostate.edu/~scharfh/CSP_parallel/data/arrivals_subset.RData"))
+K <- 50
+N <- dim(arrivals.sub)[1]
+
+## for convenience kill off 8 observations (we have 5208) and make cv test sets
+set.seed(1985)
+discarded <- sample(1:N, size = 8)
+cv.test.sets <- matrix(sample((1:N)[-discarded], size = N - 8), ncol = K)
+```
 ```{r get_errs, eval=TRUE, echo = FALSE}
 load(url("http://www.stat.colostate.edu/~scharfh/CSP_parallel/data/arrivals_subset.RData"))
 lq.loss <- function(y, y.hat, q = 1) {(abs(y - y.hat))^q}
@@ -109,12 +125,10 @@ get.errs <- function(test.set = NULL,
 }
 ```
 
+## for each fold, fit the model...
 ```{r get_errs_display1, eval=FALSE, echo = TRUE}
-load(url("http://www.stat.colostate.edu/~scharfh/CSP_parallel/data/arrivals_subset.RData"))
 lq.loss <- function(y, y.hat, q = 1) {(abs(y - y.hat))^q}
-get.errs <- function(test.set = NULL,
-                     discarded = NULL,
-                     q = 1) {
+get.errs <- function(test.set = NULL, discarded = NULL, q = 1) {
     sml.glm <- glm(arrivals ~
                    bs(hour, degree = 4)
                    + weekend
@@ -126,14 +140,14 @@ get.errs <- function(test.set = NULL,
                    + as.factor(id),
                    data = arrivals.sub[-c(discarded, test.set), ],
                    family = "poisson")
-    ```
-
-##
-```{r get_errs_display2, eval=FALSE, echo = TRUE}
     big.glm <- glm(arrivals ~
                    bs(hour, degree = 4)*weekend*as.factor(id),
                    data = arrivals.sub[-c(discarded, test.set), ],
                    family = "poisson")
+    ```
+
+## ...and get the training error
+```{r get_errs_display2, eval=FALSE, echo = TRUE}
     sml.err <- mean(lq.loss(predict(object = sml.glm,
                                     newdata = arrivals.sub[test.set, -7],
                                     type = "response"),
@@ -151,22 +165,6 @@ get.errs <- function(test.set = NULL,
                             q = q))
     return(c(sml.err, med.err, big.err))
 }
-```
-
-## {.centered}
-<img src="../fig/fit_all.png"
-alt = "fit all"
-height = 615>
-
-## Make our K-fold test sets | and implicitly, our training sets
-```{r CV_test_sets}
-K <- 50
-N <- dim(arrivals.sub)[1]
-
-## for convenience kill off 8 observations (we have 5208) and make cv test sets
-set.seed(1985)
-discarded <- sample(1:N, size = 8)
-cv.test.sets <- matrix(sample((1:N)[-discarded], size = N - 8), ncol = K)
 ```
 
 ## K-fold CV with a for loop {.build}
@@ -237,7 +235,7 @@ system.time(
 # results
 <!--
 have knitr do the results - sucks 
-```{r errs, include = TRUE, echo=FALSE, dev = 'png', fig.path='../fig/', fig.show='asis'}
+```{r errs, include = FALSE, echo=FALSE, dev = 'png', fig.path='../fig/', fig.show='asis'}
 err <- data.frame(t(err.foreach))
 names(err) <- c("sml", "med", "big")
 library(RColorBrewer)
@@ -256,7 +254,7 @@ legend("topright",
 -->
 
 ## {.centered}
-<img src = "../fig/error_densities.png"
+<img src = "../fig/error_boxplots.png"
 alt = "error densities"
 height = 615
 align = 'middle'>

@@ -41,7 +41,7 @@ In contrast, some sequential or <span class = 'eleven'>**non-parallel**</span> p
 - MCMC algorithms 
 - several types of model selection (e.g.: `step()` or the LARS algorithm for LASSO)
 
-For loops that do not explicitly involve dependent calculations are wasteful if we have multiple processors available. Perhaps even worse, the time cost of using such an approach can put some useful statistical tools beyond our reach!
+`for` loops that do not explicitly involve dependent calculations are wasteful if we have multiple processors available. Perhaps even worse, the time cost of using such an approach can put some useful statistical tools beyond our reach!
 
 ## options
 - Changing from a for loop to one of the `apply()` functions can help, but still doesn't use multiple processors.
@@ -59,7 +59,7 @@ We would like to find a way to make use of our whole computer, and make valuable
 <span class = 'ten'>**Our goal**</span>: 
 We will begin with a simple chunk of R code involving a for loop and transform it into a `foreach` loop. Along the way, we'll take a look at the equivalent computation done with an `apply()` function, and see that using `foreach` and multiple processors outperforms this.
 
-# data and research question
+# example: data and research question
 We are going to look at data from the New York City bikeshare program [Citibike](https://www.citibikenyc.com/). 
 
 - 7 busiest locations from May 2014
@@ -75,19 +75,28 @@ We want to find a model which can offer good prediction, with the hope that this
 
 ****
 ## data
-The smoother is loess.
 ![data](../fig/top7_average_day.png)
-
-<!-- loess smoother -->
 
 ****
 # fitting GLMs and extracting prediction error
 We are considering three increasingly complex models of the arrival behavior. In order to compare three candidate models' prediction error, we'll use K-fold cross validation, where we use the same folds for all three models. 
 
-Here's some familiar code that sets things up:
+First, we the load the data and make our K-fold test sets (and implicitly, our training sets):
 
 ```r
 load(url("http://www.stat.colostate.edu/~scharfh/CSP_parallel/data/arrivals_subset.RData"))
+K <- 50
+N <- dim(arrivals.sub)[1]
+
+## for convenience kill off 8 observations (we have 5208) and make cv test sets
+set.seed(1985)
+discarded <- sample(1:N, size = 8)
+cv.test.sets <- matrix(sample((1:N)[-discarded], size = N - 8), ncol = K)
+```
+
+Next, we build a function to fit the data to the training sets and extract the corresponding estimate of prediciton error. This should still be familiar code, no new packages yet.
+
+```r
 lq.loss <- function(y, y.hat, q = 1) {(abs(y - y.hat))^q}
 get.errs <- function(test.set = NULL,
                      discarded = NULL,
@@ -127,6 +136,7 @@ get.errs <- function(test.set = NULL,
 }
 ```
 
+The fits using all the data look like:
 ![fit.all](../fig/fit_all.png)
 
 <!--
@@ -134,18 +144,6 @@ get.errs <- function(test.set = NULL,
 <img src="../fig/predictions_med.png">
 <img src="../fig/predictions_big.png">
 -->
-
-Next, we make our K-fold test sets (and implicitly, our training sets):
-
-```r
-K <- 50
-N <- dim(arrivals.sub)[1]
-
-## for convenience kill off 8 observations (we have 5208) and make cv test sets
-set.seed(1985)
-discarded <- sample(1:N, size = 8)
-cv.test.sets <- matrix(sample((1:N)[-discarded], size = N - 8), ncol = K)
-```
 
 ## K-fold CV with a for loop
 Using a naive for loop, we could implement this as:
@@ -163,12 +161,12 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  17.051   0.925  18.118
+##  20.481   0.884  22.820
 ```
 
 
 ## K-fold CV with an apply function
-If you're good with `apply()` functions you might upgrade to
+If you're good with `apply()` functions you might upgrade (slightly) to
 
 ```r
 ## apply version
@@ -185,7 +183,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  16.126   0.956  17.129
+##  18.930   0.829  20.147
 ```
 
 Neither of the first two methods take advantage of multiple processors. While the `apply()` functions avoid the inherently sluggish nature of for loops in `R`, they are still ignorant of the processor structure. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -198,6 +196,14 @@ Here is the same computation written with a `foreach` loop
 ## foreach version
 library(foreach)
 library(doParallel)
+```
+
+```
+## Loading required package: iterators
+## Loading required package: parallel
+```
+
+```r
 registerDoParallel(cl = 2)
 system.time(
     err.foreach <- foreach(i=1:K,
@@ -212,7 +218,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  10.795   0.511  11.684
+##  11.449   0.545  12.573
 ```
 
 # components of a foreach loop
@@ -229,7 +235,9 @@ Note that despite the syntactically similar structure, `foreach()` is a differen
 - Notice that unlike `apply()` functions, the `foreach` takes an expression (in braces after `%dopar%`) instead of a function.
 
 # results
-![plot of chunk errs](../fig/errerrs.png) 
+
+![fit.all](../fig/error_boxplots.png)
+
 
 # additional topics
 
@@ -254,7 +262,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  21.807   0.864  11.310
+##  22.666   1.075  12.571
 ```
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
 
@@ -265,6 +273,15 @@ Fortunately, there is `doRNG`. There are many ways to implement this package, th
 
 ```r
 library(doRNG)
+```
+
+```
+## Loading required package: rngtools
+## Loading required package: pkgmaker
+## Loading required package: registry
+```
+
+```r
 registerDoParallel(cl = 2)
 blah1 <- foreach(x = 1:10, 
                  .options.RNG = 1985,
@@ -355,7 +372,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.080   0.005   0.086
+##   0.078   0.004   0.083
 ```
 
 ```r
@@ -365,6 +382,7 @@ which(busiest.for==max(busiest.for))
 ```
 ## [1] 20
 ```
+<img src = "https://pbs.twimg.com/media/B4AFeZvIgAABsqn.jpg" alt = "parallel puppies">
 
 # <span class = "nine">references</span>
 
@@ -379,6 +397,3 @@ which(busiest.for==max(busiest.for))
 
 ## Data 
 [citibike system data](https://www.citibikenyc.com/system-data)
-
-****
-<img src = "https://pbs.twimg.com/media/B4AFeZvIgAABsqn.jpg" alt = "parallel puppies">

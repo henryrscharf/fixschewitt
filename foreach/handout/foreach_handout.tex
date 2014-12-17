@@ -142,10 +142,10 @@ In contrast, some sequential or {\textbf{non-parallel}} processes:
   algorithm for LASSO)
 \end{itemize}
 
-For loops that do not explicitly involve dependent calculations are
-wasteful if we have multiple processors available. Perhaps even worse,
-the time cost of using such an approach can put some useful statistical
-tools beyond our reach!
+\texttt{for} loops that do not explicitly involve dependent calculations
+are wasteful if we have multiple processors available. Perhaps even
+worse, the time cost of using such an approach can put some useful
+statistical tools beyond our reach!
 
 \subsection{options}\label{options}
 
@@ -184,7 +184,8 @@ Along the way, we'll take a look at the equivalent computation done with
 an \texttt{apply()} function, and see that using \texttt{foreach} and
 multiple processors outperforms this.
 
-\section{data and research question}\label{data-and-research-question}
+\section{example: data and research
+question}\label{example-data-and-research-question}
 
 We are going to look at data from the New York City bikeshare program
 \href{https://www.citibikenyc.com/}{Citibike}.
@@ -218,7 +219,7 @@ validation to decide which one to use.
 
 \subsection{data}\label{data}
 
-The smoother is loess. \includegraphics{../fig/top7_average_day.png}
+\includegraphics{../fig/top7_average_day.png}
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -230,11 +231,28 @@ behavior. In order to compare three candidate models' prediction error,
 we'll use K-fold cross validation, where we use the same folds for all
 three models.
 
-Here's some familiar code that sets things up:
+First, we the load the data and make our K-fold test sets (and
+implicitly, our training sets):
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{load}\NormalTok{(}\KeywordTok{url}\NormalTok{(}\StringTok{"http://www.stat.colostate.edu/~scharfh/CSP_parallel/data/arrivals_subset.RData"}\NormalTok{))}
+\NormalTok{K <-}\StringTok{ }\DecValTok{50}
+\NormalTok{N <-}\StringTok{ }\KeywordTok{dim}\NormalTok{(arrivals.sub)[}\DecValTok{1}\NormalTok{]}
+
+\NormalTok{## for convenience kill off 8 observations (we have 5208) and make cv test sets}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1985}\NormalTok{)}
+\NormalTok{discarded <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\NormalTok{:N, }\DataTypeTok{size =} \DecValTok{8}\NormalTok{)}
+\NormalTok{cv.test.sets <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{sample}\NormalTok{((}\DecValTok{1}\NormalTok{:N)[-discarded], }\DataTypeTok{size =} \NormalTok{N -}\StringTok{ }\DecValTok{8}\NormalTok{), }\DataTypeTok{ncol =} \NormalTok{K)}
+\end{Highlighting}
+\end{Shaded}
+
+Next, we build a function to fit the data to the training sets and
+extract the corresponding estimate of prediciton error. This should
+still be familiar code, no new packages yet.
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{lq.loss <-}\StringTok{ }\NormalTok{function(y, y.hat, }\DataTypeTok{q =} \DecValTok{1}\NormalTok{) \{(}\KeywordTok{abs}\NormalTok{(y -}\StringTok{ }\NormalTok{y.hat))^q\}}
 \NormalTok{get.errs <-}\StringTok{ }\NormalTok{function(}\DataTypeTok{test.set =} \OtherTok{NULL}\NormalTok{,}
                      \DataTypeTok{discarded =} \OtherTok{NULL}\NormalTok{,}
@@ -275,21 +293,8 @@ Here's some familiar code that sets things up:
 \end{Highlighting}
 \end{Shaded}
 
+The fits using all the data look like:
 \includegraphics{../fig/fit_all.png}
-
-Next, we make our K-fold test sets (and implicitly, our training sets):
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{K <-}\StringTok{ }\DecValTok{50}
-\NormalTok{N <-}\StringTok{ }\KeywordTok{dim}\NormalTok{(arrivals.sub)[}\DecValTok{1}\NormalTok{]}
-
-\NormalTok{## for convenience kill off 8 observations (we have 5208) and make cv test sets}
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1985}\NormalTok{)}
-\NormalTok{discarded <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\NormalTok{:N, }\DataTypeTok{size =} \DecValTok{8}\NormalTok{)}
-\NormalTok{cv.test.sets <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{sample}\NormalTok{((}\DecValTok{1}\NormalTok{:N)[-discarded], }\DataTypeTok{size =} \NormalTok{N -}\StringTok{ }\DecValTok{8}\NormalTok{), }\DataTypeTok{ncol =} \NormalTok{K)}
-\end{Highlighting}
-\end{Shaded}
 
 \subsection{K-fold CV with a for loop}\label{k-fold-cv-with-a-for-loop}
 
@@ -310,13 +315,14 @@ Using a naive for loop, we could implement this as:
 
 \begin{verbatim}
 ##    user  system elapsed 
-##  19.625   0.894  20.940
+##  18.912   0.809  20.039
 \end{verbatim}
 
 \subsection{K-fold CV with an apply
 function}\label{k-fold-cv-with-an-apply-function}
 
-If you're good with \texttt{apply()} functions you might upgrade to
+If you're good with \texttt{apply()} functions you might upgrade
+(slightly) to
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -335,7 +341,7 @@ If you're good with \texttt{apply()} functions you might upgrade to
 
 \begin{verbatim}
 ##    user  system elapsed 
-##  18.707   0.743  19.532
+##  20.643   1.006  23.400
 \end{verbatim}
 
 Neither of the first two methods take advantage of multiple processors.
@@ -354,6 +360,16 @@ Here is the same computation written with a \texttt{foreach} loop
 \NormalTok{## foreach version}
 \KeywordTok{library}\NormalTok{(foreach)}
 \KeywordTok{library}\NormalTok{(doParallel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: iterators
+## Loading required package: parallel
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \KeywordTok{registerDoParallel}\NormalTok{(}\DataTypeTok{cl =} \DecValTok{2}\NormalTok{)}
 \KeywordTok{system.time}\NormalTok{(}
     \NormalTok{err.foreach <-}\StringTok{ }\KeywordTok{foreach}\NormalTok{(}\DataTypeTok{i=}\DecValTok{1}\NormalTok{:K,}
@@ -369,7 +385,7 @@ Here is the same computation written with a \texttt{foreach} loop
 
 \begin{verbatim}
 ##    user  system elapsed 
-##   10.79    0.51   11.60
+##  10.612   0.534  11.488
 \end{verbatim}
 
 \section{components of a foreach
@@ -425,7 +441,7 @@ The rest of the structure is new:
 
 \section{results}\label{results}
 
-\includegraphics{../fig/errerrs.png}
+\includegraphics{../fig/error_boxplots.png}
 
 \section{additional topics}\label{additional-topics}
 
@@ -462,7 +478,7 @@ Here is our same example with an iterator instead of a list.
 
 \begin{verbatim}
 ##    user  system elapsed 
-##  22.230   0.909  11.825
+##   21.54    1.07   12.07
 \end{verbatim}
 
 Iterators can also be used to keep from ever having to store even a
@@ -487,6 +503,17 @@ this package, the two easiest of which are:
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{library}\NormalTok{(doRNG)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: rngtools
+## Loading required package: pkgmaker
+## Loading required package: registry
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \KeywordTok{registerDoParallel}\NormalTok{(}\DataTypeTok{cl =} \DecValTok{2}\NormalTok{)}
 \NormalTok{blah1 <-}\StringTok{ }\KeywordTok{foreach}\NormalTok{(}\DataTypeTok{x =} \DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{, }
                  \DataTypeTok{.options.RNG =} \DecValTok{1985}\NormalTok{,}
@@ -614,7 +641,7 @@ means a regular nested for loop is quicker.
 
 \begin{verbatim}
 ##    user  system elapsed 
-##   0.072   0.003   0.076
+##   0.073   0.004   0.078
 \end{verbatim}
 
 \begin{Shaded}
@@ -646,7 +673,5 @@ foreach loops}
 \subsection{Data}\label{data-1}
 
 \href{https://www.citibikenyc.com/system-data}{citibike system data}
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
 \end{document}
