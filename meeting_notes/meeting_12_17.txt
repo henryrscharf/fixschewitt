@@ -1,0 +1,3 @@
+## for henry:
+
+- library(parallel) and detectCores()
