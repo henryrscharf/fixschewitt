@@ -1,35 +1,35 @@
-# moving from for to foreach
+# Moving from for to foreach
 Henry Scharf  
-December 4, 2014  
+December 18, 2014  
 
 
 
-# why?
-## embarassingly parallel tasks {.build}
+# Why?
+## Embarassingly parallel tasks {.build}
 ### <span class = 'eleven'>**parallel**</span> processes: 
 
-- bootstrapping
-- cross-validation 
-- simulating independent random variables (`dorng`)
+- Bootstrapping
+- Cross-validation 
+- Simulating independent random variables (`dorng`)
 
 ### <span class = 'eleven'>**non-parallel**</span> processes:
 
 - MCMC algorithms 
-- several types of model selection (e.g.: `step()` or the LARS algorithm for LASSO)
+- Several types of model selection (e.g.: `step()` or the LARS algorithm for LASSO)
 
-## what to do {.build}
-### options 
+## What to do {.build}
+### Options 
 - Changing from a for loop to one of the `apply()` functions can help, but still doesn't use multiple processors.
 - Use the `parallel` package (thanks, Miranda!).
 - Don't use R.
-- Use the `foreach` package!
+- Use the `foreach` package! [@foreach]
 
-### why foreach?
+### Why foreach?
 - Make use of our whole computer
 - Without having to invest large amounts of time in learning new programming languages
 - <span class = 'ten'>**Our goal**</span>: transform a for loop into a foreach loop
 
-# <span class = "ten">example</span>: data and research question
+# <span class = "ten">Example</span>: data and research question
 ## citibike nyc
 <div class='columns-2'>
 **Goal**: predict arrival volume to inform management of bike stations
@@ -49,7 +49,7 @@ width = 550>
 alt = "busiest 7 stations"
 height = 615>
 
-# fitting GLMs and extracting prediction error | the Goldilocks approach 
+# Fitting GLMs and extracting prediction error | the Goldilocks approach 
 ##
 <div class = "centered"">
 <img src="../fig/fit_all.png"
@@ -72,9 +72,10 @@ cv.test.sets <- matrix(sample((1:N)[-discarded], size = N - 8), ncol = K)
 ```
 
 
-## for each fold, fit the model...
+## For each fold, fit the model...
 
 ```r
+library(splines)
 lq.loss <- function(y, y.hat, q = 1) {(abs(y - y.hat))^q}
 get.errs <- function(test.set = NULL, discarded = NULL, q = 1) {
     sml.glm <- glm(arrivals ~
@@ -132,7 +133,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  28.400   1.157  29.757
+##  30.900   1.494  35.088
 ```
 
 ## K-fold CV with an apply function {.build}
@@ -152,7 +153,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  28.170   1.148  29.574
+##  29.666   1.359  31.670
 ```
 
 Both of these assume a single processor architecture. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -162,6 +163,7 @@ Both of these assume a single processor architecture. We want to chop the job in
 ```r
 library(foreach)
 library(doParallel)
+detectCores()
 ```
 
 
@@ -180,11 +182,11 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  15.300   0.712  16.379
+##  17.631   0.885  19.220
 ```
 
-# the breakdown
-## components of a foreach loop
+# The breakdown
+## Components of a foreach loop
 - `registerDoParallel(cl = 2)`
 - `%___%`
     - `%do%` performs the calculations in order and uses only one processor.
@@ -193,14 +195,14 @@ system.time(
     - `%:%` can be used for nesting loops, which we'll see in an example at the end of the tutorial.
     
 ## `foreach()` is a function {.build}
-### arguments
+### Arguments
 
 - `.combine` can take on the intuitive values `'c'`, `'cbind'`, or `'+'` as well as more complex functions and tells `foreach` how to combine the outputs from each iteration. The default is to return a list.    
 - `.inorder` is a `TRUE`/`FALSE` argument. In general, it is better to change this from the default of `TRUE` to `FALSE` whenever possible.
 
 ### Notice that unlike `apply()` functions, the `foreach` takes an expression (in braces after `%dopar%`) instead of a function.
 
-# results
+# Results
 <!--
 have knitr do the results - sucks 
 
@@ -212,9 +214,9 @@ alt = "error densities"
 height = 615
 align = 'middle'>
 
-# additional topics
+# Additional topics
 
-## iterators: smart memory use {.build}
+## Iterators: smart memory use {.build}
 <!--
 Sometimes the list or vector that we are iterating over (in the above case, the vector `1:K`) can be a very large object. In our case the vector is quite reasonable in size, but the object we are iterating over could instead be a multi-dimensional object with many values and a high level of precision. In this case, we'd be storing a complete copy of this massive object for each processor, which could potentially fill up our memory and slow things down. We could save memory by only keeping the piece of our list we need for a given calculation as they are computed, and dumping the rest. This is the idea behind the `iterators` package in R.
 -->
@@ -237,58 +239,58 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  30.349   1.422  15.995
+##  33.665   1.625  17.219
 ```
 <!--
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
 -->
 
-## random numbers {.build}
+## Random numbers {.build}
 
 There are many ways to implement `doRNG`, the two easiest of which are:
 
 ```r
 library(doRNG)
 registerDoParallel(cl = 2)
-blah1 <- foreach(x = 1:10, 
-                 .options.RNG = 1985,
-                 .combine = 'c') %dorng% {
-                     rnorm(1)
-                     }
+foo <- foreach(x = 1:10, 
+               .options.RNG = 1985,
+               .combine = 'c') %dorng% {
+                   rnorm(1)
+                   }
 ```
 and 
 
 ```r
 registerDoParallel(cl = 2)
 registerDoRNG(seed = 1985)
-blah2 <- foreach(x = 1:10,
-                 .combine = 'c') %dopar% {
-                     rnorm(1)
-                     }
+bar <- foreach(x = 1:10,
+               .combine = 'c') %dopar% {
+                   rnorm(1)
+                   }
 ```
-## random numbers
+## Random numbers
 Note that this gives reproducible results!
 
 ```r
-sum(blah1 != blah2) 
+sum(foo != bar) 
 ```
 
 ```
 ## [1] 0
 ```
 
-## packages that support foreach
+## Packages that support foreach
 Some packages come with parallel functionality built in via `foreach`.
 
 - `glmnet`
 - `gam`
 - `ggmcmc` 
 - `plyr`
-- many others: see [reverse suggests](http://cran.r-project.org/web/packages/foreach/index.html) on `foreach`'s CRAN page.
+- Many others: see [reverse suggests](http://cran.r-project.org/web/packages/foreach/index.html) on `foreach`'s CRAN page.
 
-# <span class="ten">exercise</span>
+# <span class="ten">Exercise</span>
 
-## a summary statistic
+## A summary statistic
 The following calculation wouldn't typically require parallelization because it isn't a huge task, however we use it for practice's sake.
 
 Suppose we wish to figure out which day in May had the most combined arrivals across these seven stations. Here's a function to get started, you're welcome to scrap it for your own, or use it and fill in the gaps in what follows.
@@ -301,7 +303,7 @@ sum.arrivals <- function(date = NULL,
     return(sum.arr)
 }
 ```
-## fix up the following code  {.build}
+## Fix up the following code  {.build}
 
 The following code needs some help. When nesting `foreach` loops ([see this vignette](http://cran.r-project.org/web/packages/foreach/vignettes/nested.pdf)), we need to use `%:%`. Fill in the missing parts to make the code work.
 
@@ -318,13 +320,12 @@ system.time(
                                    .combine = ___) %_____% {
                                        sum.arrivals(date = date,
                                                     id = id)
-                                   }
-                       }
+                                       }
     )
 which(busiest==max(busiest))    
 ```
 
-## one answer
+## One answer
 
 ```r
 registerDoParallel(cl = 4)
@@ -342,7 +343,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.283   0.066   0.256
+##   0.301   0.097   0.257
 ```
 
 ```r
@@ -353,7 +354,7 @@ which(busiest==max(busiest))
 ## [1] 20
 ```
 
-## too much overhead
+## Too much overhead
 
 ```r
 busiest.for <- rep(0, 31)
@@ -369,7 +370,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.081   0.006   0.090
+##   0.076   0.006   0.083
 ```
 
 ```r
@@ -385,7 +386,9 @@ which(busiest.for==max(busiest.for))
 alt = "parallel puppies"
 width = 1000>
 
-## <span class = "nine">references</span>
+## <span class = "nine">References</span>
+
+[foreach](http://CRAN.R-project.org/package=foreach)
 
 ### Other tutorials
 [Getting Started with doParallel and foreach](http://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf)
@@ -396,5 +399,10 @@ width = 1000>
 
 [Nesting foreach loops](http://cran.r-project.org/web/packages/foreach/vignettes/nested.pdf)
 
+****
+
 ### Data 
 [citibike system data](https://www.citibikenyc.com/system-data)
+
+### Other neat tools:
+[menu meters](http://www.ragingmenace.com/software/menumeters/)

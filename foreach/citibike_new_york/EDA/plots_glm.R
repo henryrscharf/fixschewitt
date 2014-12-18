@@ -47,7 +47,10 @@ fit.gg <- data.frame("fit" = fitted.all,
 fit.gg <- cbind(arrivals.sub, fit.gg)
 rownames(fit.gg) <- NULL
 
-ggplot(fit.gg,
+ggplot(fit.gg[fit.gg$id == 293 |
+                  fit.gg$id == 426 |
+                      fit.gg$id == 435 |
+                          fit.gg$id == 497, ],
        aes(x = hour,
            y = fit,
            color = as.factor(id))) +

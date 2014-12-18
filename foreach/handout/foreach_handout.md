@@ -1,6 +1,6 @@
 # moving from for to foreach
 Henry Scharf  
-December 4, 2014  
+December 18, 2014  
 
 
 <!--
@@ -47,7 +47,7 @@ In contrast, some sequential or <span class = 'eleven'>**non-parallel**</span> p
 - Changing from a for loop to one of the `apply()` functions can help, but still doesn't use multiple processors.
 - Use the `parallel` package (thanks, Miranda!).
 - Don't use R.
-- Use the `foreach` package!
+- Use the `foreach` package! [@foreach]
 
 
 ## why foreach?
@@ -161,7 +161,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  20.481   0.884  22.820
+##  20.472   0.946  21.974
 ```
 
 
@@ -183,7 +183,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  18.930   0.829  20.147
+##  21.880   1.103  24.427
 ```
 
 Neither of the first two methods take advantage of multiple processors. While the `apply()` functions avoid the inherently sluggish nature of for loops in `R`, they are still ignorant of the processor structure. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -196,14 +196,6 @@ Here is the same computation written with a `foreach` loop
 ## foreach version
 library(foreach)
 library(doParallel)
-```
-
-```
-## Loading required package: iterators
-## Loading required package: parallel
-```
-
-```r
 registerDoParallel(cl = 2)
 system.time(
     err.foreach <- foreach(i=1:K,
@@ -218,7 +210,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  11.449   0.545  12.573
+##  11.280   0.545  12.207
 ```
 
 # components of a foreach loop
@@ -262,7 +254,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  22.666   1.075  12.571
+##  23.969   1.238  15.214
 ```
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
 
@@ -345,8 +337,7 @@ system.time(
                                    .combine = ___) %_____% {
                                        sum.arrivals(date = date,
                                                     id = id)
-                                   }
-                       }
+                                       }                       
     )
 which(busiest==max(busiest))    
 ```
@@ -372,7 +363,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.078   0.004   0.083
+##   0.077   0.006   0.083
 ```
 
 ```r
@@ -386,6 +377,8 @@ which(busiest.for==max(busiest.for))
 
 # <span class = "nine">references</span>
 
+[foreach](http://CRAN.R-project.org/package=foreach)
+
 ## Other tutorials
 [Getting Started with doParallel and foreach](http://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf)
 
@@ -397,3 +390,6 @@ which(busiest.for==max(busiest.for))
 
 ## Data 
 [citibike system data](https://www.citibikenyc.com/system-data)
+
+## Other neat tools:
+[menu meters](http://www.ragingmenace.com/software/menumeters/)

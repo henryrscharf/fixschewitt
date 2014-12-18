@@ -1,11 +1,8 @@
 ---
 title: "moving from for to foreach"
 author: "Henry Scharf"
-date: "December 4, 2014"
+date: "December 18, 2014"
 output:
-  pdf_document:
-    keep_tex: yes
-    toc: yes
   html_document:
     css: style_rainbow_brewer_11.css
     highlight: tango
@@ -13,6 +10,10 @@ output:
     number_sections: yes
     theme: readable
     toc: yes
+  pdf_document:
+    keep_tex: yes
+    toc: yes
+bibliography: ../foreach.bib
 ---
 
 
@@ -64,7 +65,7 @@ In contrast, some sequential or <span class = 'eleven'>**non-parallel**</span> p
 - Changing from a for loop to one of the `apply()` functions can help, but still doesn't use multiple processors.
 - Use the `parallel` package (thanks, Miranda!).
 - Don't use R.
-- Use the `foreach` package!
+- Use the `foreach` package! [@foreach]
 
 
 ## why foreach?
@@ -325,8 +326,7 @@ system.time(
                                    .combine = ___) %_____% {
                                        sum.arrivals(date = date,
                                                     id = id)
-                                   }
-                       }
+                                       }                       
     )
 which(busiest==max(busiest))    
 ```
@@ -353,6 +353,8 @@ which(busiest.for==max(busiest.for))
 
 # <span class = "nine">references</span>
 
+[foreach](http://CRAN.R-project.org/package=foreach)
+
 ## Other tutorials
 [Getting Started with doParallel and foreach](http://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf)
 
@@ -364,3 +366,6 @@ which(busiest.for==max(busiest.for))
 
 ## Data 
 [citibike system data](https://www.citibikenyc.com/system-data)
+
+## Other neat tools:
+[menu meters](http://www.ragingmenace.com/software/menumeters/)
