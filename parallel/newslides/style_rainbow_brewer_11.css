@@ -1,0 +1,61 @@
+/* overstrike */
+.reveal section del {
+  color: #d53e4f;
+}
+
+/* section h2 font color */
+.section .reveal h2 {
+    color: #9e0142;
+}
+
+/* section background color*/
+.section .reveal .state-background {
+    background: #bababa;
+}
+
+/* sub-section h2, h3 font color*/
+.sub-section .reveal h2 {
+    color: #3288bd;
+    margin-top: -3cm ;
+}
+
+/* sub-section background color*/
+.sub-section .reveal .state-background {
+    background: #e0e0e0
+}
+
+
+/* classes by number in palette to change font color*/
+.one {
+    color: #9e0142;
+}
+.two {
+    color: #d53e4f;
+}
+.three {
+    color: #f46d43;
+}
+.four {
+    color: #fdae61;
+}
+.five {
+    color: #fee08b;
+}
+.six {
+    color: #ffffbf;
+}
+.seven {
+    color: #e6f598;
+}
+.eight {
+    color: #abdda4;
+}
+.nine {
+    color: #66c2a5;
+}
+.ten {
+    color: #3288bd;
+}
+.eleven {
+    color: #5e4fa2;
+}
