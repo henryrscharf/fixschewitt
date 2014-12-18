@@ -126,8 +126,13 @@ MapReduce achieves parallelization by running separate copies of an analysis  on
 
 <span style="position:relative; top:-55px"><img src="../diagrams/mapred-5.png"/></span>
 
-## Natural strengths
+## Hadoop - Natural strengths
 
+- Extract data
+- Group data
+- Compute group summaries
+
+<!--
 Hadoop's natural computing strength is to apply a function to **extract** "data" from each record in a dataset, **group** the function's outputs, and **compute** summaries of the grouped outputs.
 
     *Examples:* 
@@ -135,10 +140,16 @@ Hadoop's natural computing strength is to apply a function to **extract** "data"
     1. Given a dataset of tax records for many individuals, you could easily **extract** salaries, **group** them by city, and **compute** average salaries by city with Hadoop.
     
     2. Given a large collection of Twitter tweets, with Hadoop you could easily apply natural language processing algorithms to **extract** tweet topics, **group** by date, and **compute** the most popular topics over time.
+-->
     
-    
-## Natural "weaknesses"
+## Hadoop - Natural "weaknesses"
 
+"Everything else"
+
+- Iterative algorithms
+- Multi-step workflows
+
+<!--
 Although this is getting better, Hadoop less naturally applies iterative algorithms to datasets since iterative algorithms don't as immediately fit into the **extract**, **group**, and **compute/summarize** pattern.
 
     *Examples:*
@@ -148,6 +159,7 @@ Although this is getting better, Hadoop less naturally applies iterative algorit
     2. Given a large dataset of sales records, it would take more programming and computational effort  to use the entire dataset to fit a logistic regression model that could help predict which customers will buy different products based on demographic information.
     
     *Note:* Sometimes data storage tricks and approximate algorithms can be used to help achieve efficient parallelization for these and related types of problems.
+-->
 
 
 # <span style="position: relative; left:-60px; margin-right:-50px; top: 35px;"><img src="../diagram_icons/hadoop-icons-master/Images/Hive_Pig_Tez_MR_Processing_Engine.png" width=10% height=10%/></span> R/Hadoop integrations
@@ -215,17 +227,22 @@ Evaluate alignment with the following factors:
 
 ## Lab problem (simplified)
 
-- A car insurance company launched a small pilot study to evaluate a new program they
+- A car insurance company launched a **small pilot study** to evaluate a new program they
 are considering offering to all of their customers.  At the end of the study the participants
 were asked whether or not they would like to stay enrolled in the offering.  
 
 - The company
-would like to use the participants' demographic information and their feedback to help 
-predict whether the program can be profitable if offered to all customers.  
+would like to use the participants' **demographic information** and their feedback to help 
+**predict** whether the program can be **profitable** if offered to all customers.  
 
 - For marketing
 purposes, they are additionally interested in knowing if the program is very
 popular with specific subsets of their customers.
+
+Business questions:
+
+- Keep the program?
+- Focus marketing to specific groups?
 
 ## Analytic approach (simplified)
 
@@ -286,7 +303,7 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null cloudera@192.168
 ## Load and fit training data
 
 - Load data from pilot program
-```
+```{r, eval=F}
   pilot.path = '/CSP/data/insurance/pilotProgram_results.csv'
   pilot = from.dfs(pilot.path, format='csv')
   pilot.data = pilot$val
@@ -296,12 +313,12 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null cloudera@192.168
 ```
     
 - Fit logistic regression model to data
-```
+```{r, eval=F}
   pilot.fitted = glm(stay ~ ., binomial, pilot.data)
 ```
     
 - Reduce model and view results
-```
+```{r, eval=F}
   library(MASS)
   pilot.fitted.reduced = stepAIC(pilot.fitted)
   summary(pilot.fitted.reduced)
@@ -310,14 +327,14 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null cloudera@192.168
 ## MapReduce: Apply model to data
 
 - Write mapper
-```
+```{r, eval=F}
   predictor.names = t(data.colnames$val)[-1]
   predictor.levels = lapply(pilot.data, levels)[-1]
   predictors.count = length(predictor.levels)
   not.null = function(x) { !is.null(x) }
   columns.forFactors = (1:predictors.count)[sapply(predictor.levels, not.null)]
 ```
-```
+```{r, eval=F}
   prediction.mapper = function(key, customer){ 
         colnames(customer) = predictor.names
         for(factorCol in columns.forFactors) {
@@ -333,12 +350,12 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null cloudera@192.168
 ## MapReduce: Summarize predictions
 
 - Write reducer
-```
+```{r, eval=F}
   counting.reducer = function(k, vv) { keyval(k, sum(vv, na.rm=T)/length(vv)) }
 ```
 
 - Set up and execute MapReduce job
-```
+```{r, eval=F}
   mapred.result = mapreduce(
         input = '/CSP/data/insurance/customer_profiles.csv',
         input.format = 'csv',
@@ -349,7 +366,7 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null cloudera@192.168
 ```
 
 - Retrieve analytic results
-```
+```{r, eval=F}
   mapred.result.data = from.dfs(mapred.result(), format='csv')
 ```
 
