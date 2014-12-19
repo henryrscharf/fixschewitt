@@ -1,10 +1,30 @@
 ---
 title: "Computing with R and Hadoop"
+author: Josh Hewitt
+date: 19 December 2014
 output:
   ioslides_presentation:
+    css: style_rainbow_brewer_11.css
     transition: 0
     widescreen: yes
 ---
+
+<!--
+## TEsT
+
+<span class='one'>class one</span>
+<span class='two'>class two</span>
+<span class='three'>class three</span>
+<span class='four'>class four</span>
+<span class='five'>class five</span>
+<span class='six'>class six</span>
+<span class='seven'>class seven</span>
+<span class='eight'>class eight</span>
+<span class='nine'>class nine</span>
+<span class='ten'>class ten</span>
+<span class='eleven'>class eleven</span>
+<span class='twelve'>class twelve</span>
+-->
 
 ## Learning goals
 
@@ -22,19 +42,19 @@ This section should teach participants:
 ## Hadoop
 
 **Key ideas:** enables distributed computing; open source; widely used
+    
+   - older, more mature "cloud computing" technology
+    
+<span class='nine' style='font-size:large'>
+   <br />
+ The Apache Hadoop project develops open-source software for reliable, scalable, distributed computing. The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models. It is designed to scale up from single servers to thousands of machines, each offering local computation and storage...
+  <br />
+  <br />
+ Source: [Apache Software Foundation - What is Apache Hadoop?](http://hadoop.apache.org/#What+Is+Apache+Hadoop%3F) 
 
-<div class="red3">
->   <br />
-> The Apache Hadoop project develops open-source software for reliable, scalable, distributed computing. The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models. It is designed to scale up from single servers to thousands of machines, each offering local computation and storage...
->  <br />
->  <br />
-> Source: [Apache Software Foundation - What is Apache Hadoop?](http://hadoop.apache.org/#What+Is+Apache+Hadoop%3F) 
-
-</div>
+</span>
 
 <br />
-
-Hadoop is one of the older, more mature modern "cloud computing" technologies in use today.
 
 
 ## Key features
@@ -45,6 +65,16 @@ Two of Hadoop's main features are particularly relevant to this talk:
 | :- | :- |
 | Distributed storage | How do we easily store and access large datasets? |
 | Distributed/batch computing | How do we quickly run analyses on large datasets? |
+
+
+## Distributed vs. parallel computing
+
+Distributed computing is analogous to parallel computing <br><br>
+
+  <span class='three'>**Parallel**</span> - multiple <span class='three'>processors</span> run code
+  
+  <span class='ten'>**Distributed**</span> - multiple <span class='ten'>computers</span> run code
+  
 
 
 ## Overview {.flexbox .vcenter}
@@ -83,33 +113,36 @@ Two of Hadoop's main features are particularly relevant to this talk:
 
 ## Important interlude!
 
-**Hadoop uses distributed storage to facilitate distributed computing**
+**Size matters**
 
-MapReduce achieves parallelization by running separate copies of an analysis  on the smaller pieces of data files stored across the cluster.  Parallelization will not occur when a data file is "too small" to be split into smaller pieces <br/> (traditional defaults are less than 64MB or 128MB). 
+- Parallelization occurs when data is stored on multiple computers
+- Files are typically split into 64MB or 128MB chunks
+- Small files won't parallelize
+  
 
 <br/>
 **MapReduce programs have 3 main stages**
 
-1. **Map:** Apply a function to *extract* and *group* "data" from all records in a dataset
+1. **Map:** Apply a function to <span class='nine'>**extract**</span> and <span class='nine'>**group**</span> data
 2. **Shuffle/sort:** Sort the function's outputs
-3. **Reduce:** *Compute* summaries of the grouped outputs
+3. **Reduce:** <span class='nine'>**Compute**</span> summaries of the grouped outputs
     
     
 ## Overview (MapReduce) {.flexbox .vcenter}
 
-3.a.&nbsp; Users upload *Map* and *Reduce* analysis code to Hadoop.
+3.a.&nbsp; Users upload <span class='nine'>*Map*</span> and <span class='nine'>*Reduce*</span> analysis code to Hadoop.
 
 <span style="position:relative; top:-55px"><img src="../diagrams/mapred-1.png"/></span>
 
 ## Overview (MapReduce) {.flexbox .vcenter}
 
-3.b.&nbsp; Hadoop distributes the *Map* code to the servers with the data. These servers runs local analyses that extract and group data.
+3.b.&nbsp; Hadoop distributes the <span class='nine'>*Map*</span> code to the servers with the data. These servers runs local analyses that <span class='nine'>**extract**</span> and <span class='nine'>**group**</span> data.
 
 <span style="position:relative; top:-86px"><img src="../diagrams/mapred-2alt.png"/></span>
 
 ## Overview (MapReduce) {.flexbox .vcenter}
 
-3.c.&nbsp; Hadoop merges extracted data on one or more separate servers.  These servers run the *Reduce* code that computes grouped data summaries.
+3.c.&nbsp; Hadoop merges extracted data on one or more separate servers.  These servers run the <span class='nine'>*Reduce*</span> code that <span class='nine'>**computes**</span> grouped data summaries.
 
 <span style="position:relative; top:-86px"><img src="../diagrams/mapred-3.png"/></span>
 
@@ -216,6 +249,15 @@ Evaluate alignment with the following factors:
 
 # <span style="position: relative; left:-60px; margin-right:-70px; top: 30px;"><img src="../diagram_icons/AWS_Simple_Icons_svg_eps/Compute & Networking/SVG/Compute & Networking_Amazon EC2 CloudWatch.svg"/></span> Lab - Use R/Hadoop
 
+## Get ready
+
+1. Download lab materials from web (links on handout)
+    - R script
+    - Lab instructions
+    - <span class = 'ten'>**Windows only:**</span> PuTTY or other ssh client
+    - <span class = 'ten'>**Optional:**</span> presentation slides
+2. Connect to ```TheCantina``` wireless network
+
 ## Lab goals
 
 <!--- make these goals more "goal like" --->
@@ -247,7 +289,7 @@ Business questions:
 ## Analytic approach (simplified)
 
 1. In R, build a logistic regression model from the pilot study data
-2. Use RHadoop to use the regression model to predict which customers would
+2. <span class = 'ten'>**PARALLEL**</span> Use RHadoop to use the regression model to predict which customers would
    like in the program (map) and combine the results (reduce)
 3. Use RHadoop to retrieve the summary data and conduct follow-on analyses in R or build 
    charts and tables to help present the data
@@ -406,19 +448,15 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null cloudera@192.168
 
 ### R/Hadoop integrations
 
-- RHadoop documentation and examples on github
-- RHIPE's example analysis of airplane dataset
-- Any online tutorial for logistic regression or k-means via R/Hadoop 
-- RevolutionAnalytics' integration of ```biglm``` with RHadoop
+- [RHadoop documentation](https://github.com/RevolutionAnalytics/RHadoop/wiki) and [examples](https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md) on github
+- [RHIPE's example analysis of airplane dataset](http://www.stat.purdue.edu/~sguha/rhipe/doc/html/airline.html)
+- Any online tutorial for [logistic regression](https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md#logistic-regression) or [k-means](https://github.com/RevolutionAnalytics/rmr2/blob/master/docs/tutorial.md#k-means) via R/Hadoop 
+- [RevolutionAnalytics' integration of ```biglm``` with RHadoop](https://github.com/RevolutionAnalytics/rhdfs/blob/master/pkg/inst/examples/biglm.integration.r)
 
-<!---
-https://github.com/RevolutionAnalytics/rhdfs/blob/master/pkg/inst/examples/biglm.integration.r
-add the links for these details in handouts
---->
 
 ### Hadoop
 
-- Hadoop documentation by Apache, Cloudera, Hortonworks, or others
+- Hadoop documentation by [Apache](http://hadoop.apache.org/docs/current/), [Hortonworks](http://hortonworks.com/hadoop/), or [others](http://shop.oreilly.com/product/9780596521981.do)
 
 ## Acknowledgements
 
@@ -427,3 +465,13 @@ Logos/Graphics:
 - Apache Software Foundation
 - Amazon Web Services
 - HortonWorks
+
+# Parallel computing in R
+
+## Learn once, use often
+
+- Parallelization fully uses computational resources and saves time
+
+- Parts of many statistical analyses are parallelizable
+
+- Many options for parallelizing R code - use what works for you!

@@ -10,13 +10,14 @@ output:
     highlight: tango
     incremental: yes
     transition: 0
+    widescreen: yes
 ---
 
 ```{r setup, include=FALSE}
 # set global chunk options
 library(knitr)
 opts_chunk$set(cache=FALSE)
-opts_chunk$set(eval=FALSE)
+opts_chunk$set(eval=TRUE)
 ```
 
 # Why?
@@ -144,7 +145,7 @@ system.time(pvec(d, Matern, mc.cores=nCores))
 
 ## The issue
 
-- Need to be careful when parallelizing a process which generates (psuedo-)random numbers
+- Need to be careful when parallelizing a process which generates (psuedo-) random numbers
 - Want the different processes to run independent (and reproducible) random-number streams
 
 ## clusterSetRNGStream {.build}
@@ -208,13 +209,13 @@ run1 = function(...){
 
 ## Bootstrapping {.build}
 
-```{r boot2}
+```{r boot2, message=FALSE}
 system.time(
   bike.boot <- do.call(c, lapply(seq_len(nCores), run1))
   )
 ```
 
-```{r parboot2}
+```{r parboot2, message=FALSE}
 clusterSetRNGStream(cl, iseed=123)
 system.time(
   bike.boot2 <- do.call(c, parLapply(cl, seq_len(nCores), run1))
@@ -257,7 +258,7 @@ bikePred = function(data, indices){
 nBoot = nCores*250
 set.seed(123, kind="L'Ecuyer")
 system.time(
-  bike.boot3 <- boot(data=arrivals, statistic=bikePred, R=nBoot, 
+  bike.boot3 <- boot(data=arrivals.sub, statistic=bikePred, R=nBoot, 
                     parallel="multicore", ncpus=4)
 )
 ```
