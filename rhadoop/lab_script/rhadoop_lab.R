@@ -26,7 +26,9 @@ Sys.setenv(HADOOP_STREAMING='/usr/lib/hadoop-0.20-mapreduce/contrib/streaming/ha
 
 
 #
-# Load and fit training data
+# 1. Analyze study data 
+#
+# (Load and fit training data)
 #
 
 library(MASS)
@@ -50,7 +52,9 @@ summary(pilot.fitted.reduced)
 
 
 #
-# Use RHadoop to apply model to all customer records
+# 2. Make predictions (in parallel)
+#
+# (Use RHadoop to apply model to all customer records - i.e., test data)
 #
 
 # "bookkeeping" information
@@ -67,6 +71,7 @@ prediction.mapper = function(key, customer){
   colnames(customer) = predictor.names
   
   # set values of factor variables to NA if their observed level wasn't present in training data
+  #  Note: this code chunk makes R predict 'NA' for these types of records
   for(factorCol in columns.forFactors) {
     unseenLevels = which(!(customer[,factorCol] %in% predictor.levels[[factorCol]]))
     customer[unseenLevels, factorCol] = NA
@@ -79,16 +84,16 @@ prediction.mapper = function(key, customer){
   groupingKey =  paste(as.character(customer$region), as.character(customer$gender))
   predictionValue = ifelse(customer.pred>.5, 1, 0)
   
-  # send data to reducers for summarization: group by region and gender, extract 1/0 for like/dislike predictions
+  # send data to reducers for summarization: group by region and gender, extract 1/0 for predicted like/dislike of program
   keyval(groupingKey, predictionValue)
 }
 
-# define reducer... function is applied to all predictions in each region/gender group
+# define reducer... function is applied to each region/gender group
 counting.reducer = function(groupingKey, predictions) { 
   # estimate proportion of people in group that like the new program
   estimatedProportion = sum(predictions, na.rm=T)/length(predictions)
   
-  # output analytic results
+  # save analytic results as a line in mapreduce's output file
   keyval(groupingKey, estimatedProportion) 
 }
 
@@ -101,6 +106,11 @@ mapred.result = mapreduce(
   map = prediction.mapper,
   reduce = counting.reducer
 )
+
+
+#
+# 3. Evaluate/interpret predictions
+#
 
 # NOTE: mapred.result() is a function that returns the location of the analytic results
 

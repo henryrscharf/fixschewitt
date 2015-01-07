@@ -1,10 +1,10 @@
 ---
-title: "Outline for ``Computing with R and Hadoop''"
+title: "Computing with R and Hadoop"
 output:
   pdf_document: default
 ---
 
-This section will last approximately 40 minutes.  The first 20-25 minutes will introduce Hadoop and how it is used with R, and the remaining 15-20 minutes will walk participants through a demonstration lab.
+This section will last approximately 40 minutes.  The first 20-25 minutes  introduces Hadoop and how people can use it with R, and the remaining 15-20 minutes walks participants through a demonstration lab.
 
 ## Learning goals
 
@@ -16,10 +16,10 @@ This section will last approximately 40 minutes.  The first 20-25 minutes will i
 
 ## Extra materials (helpful, but not required)
 
-1. Slides for this section's presentation: \url{http://goo.gl/wmX6Xd} <!-- Henry's site -->
+1. Presentation slides: \url{http://goo.gl/wmX6Xd} <!-- Henry's site -->
 2. Virtual machine used to run R/Hadoop for the lab (requires ~4GB RAM): \url{http://goo.gl/R5Okcr}  <!-- Dropbox -->
-3. R script for lab: \url{http://goo.gl/dBaxrq} <!-- Henry's site -->
-4. Lab instructions: \url{http://goo.gl/jPSqOK} <!-- Dropbox -->
+3. Lab instructions: \url{http://goo.gl/z5BLaZ} <!-- Henry's site -->
+4. Lab R script: \url{http://goo.gl/dBaxrq} <!-- Henry's site -->
 5. PuTTY (SSH client for Windows): \url{http://goo.gl/vMv6ra}  <!-- PuTTY developer -->
 
 
@@ -27,7 +27,7 @@ This section will last approximately 40 minutes.  The first 20-25 minutes will i
 
 **Hadoop:**  Open source software for enabling distributed storage and computing capabilities on networked servers.
 
-**MapReduce:** Hadoop's 
+**MapReduce:** Hadoop's model for parallel programming.
 
 **R:** Open source statistical computing software designed with strong built-in support for statistical needs like fitting models, making predictions, and drawing inferences.
 
@@ -36,6 +36,6 @@ This section will last approximately 40 minutes.  The first 20-25 minutes will i
 
 ## Key ideas
 
-1. R and Hadoop integrate best when using the strengths of both technologies
-2. R and Hadoop do not integrate well for all projects.  Simple data processing and iterative algorithms may be best implemented with other technolgoies.
-3. Hadoop facilitates distributed computing with the MapReduce programming paradigm
+1. R and Hadoop integrate best when using the strengths of both technologies.
+2. R and Hadoop do not integrate well for all projects.  Simple data processing and iterative algorithms may be best implemented with other languages or  technologies.
+3. Hadoop facilitates distributed computing with the MapReduce programming model.
