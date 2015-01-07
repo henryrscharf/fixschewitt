@@ -1,8 +1,10 @@
 ---
-title: "Section 3: Computing with R and Hadoop"
+title: "Parallel programming in R"
 output:
   pdf_document: default
 ---
+
+# Section 3: Computing with R and Hadoop
 
 This section will last approximately 40 minutes.  The first 20-25 minutes  introduces Hadoop and how people can use it with R, and the remaining 15-20 minutes walks participants through a demonstration lab.
 
