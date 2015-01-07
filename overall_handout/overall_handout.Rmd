@@ -4,6 +4,11 @@ output:
   pdf_document: default
 ---
 
+# Contact information
+
+Josh Hewitt: joshua.hewitt@colostate.edu
+
+
 # Section 3: Computing with R and Hadoop
 
 This section will last approximately 40 minutes.  The first 20-25 minutes  introduces Hadoop and how people can use it with R, and the remaining 15-20 minutes walks participants through a demonstration lab.
