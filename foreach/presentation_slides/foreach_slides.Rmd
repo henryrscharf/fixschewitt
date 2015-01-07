@@ -395,8 +395,6 @@ width = 1000>
 
 ## <span class = "nine">References</span>
 
-[foreach](http://CRAN.R-project.org/package=foreach)
-
 ### Other tutorials
 [Getting Started with doParallel and foreach](http://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf)
 
@@ -405,8 +403,6 @@ width = 1000>
 [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf)
 
 [Nesting foreach loops](http://cran.r-project.org/web/packages/foreach/vignettes/nested.pdf)
-
-****
 
 ### Data 
 [citibike system data](https://www.citibikenyc.com/system-data)

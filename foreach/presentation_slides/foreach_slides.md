@@ -133,7 +133,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  30.900   1.494  35.088
+##  29.709   1.344  31.986
 ```
 
 ## K-fold CV with an apply function {.build}
@@ -153,7 +153,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  29.666   1.359  31.670
+##  28.488   1.243  30.086
 ```
 
 Both of these assume a single processor architecture. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -182,7 +182,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  17.631   0.885  19.220
+##  16.452   0.753  17.987
 ```
 
 # The breakdown
@@ -239,7 +239,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  33.665   1.625  17.219
+##  31.796   1.435  16.410
 ```
 <!--
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
@@ -343,7 +343,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.301   0.097   0.257
+##   0.209   0.058   0.252
 ```
 
 ```r
@@ -370,7 +370,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.076   0.006   0.083
+##   0.071   0.006   0.079
 ```
 
 ```r
@@ -388,8 +388,6 @@ width = 1000>
 
 ## <span class = "nine">References</span>
 
-[foreach](http://CRAN.R-project.org/package=foreach)
-
 ### Other tutorials
 [Getting Started with doParallel and foreach](http://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf)
 
@@ -398,8 +396,6 @@ width = 1000>
 [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf)
 
 [Nesting foreach loops](http://cran.r-project.org/web/packages/foreach/vignettes/nested.pdf)
-
-****
 
 ### Data 
 [citibike system data](https://www.citibikenyc.com/system-data)
