@@ -11,7 +11,7 @@ This lab uses a simplified scenario to illustrate how R and Hadoop can be applie
 
 1. Read the problem/scenario description below.
 2. Read the solution sketch below.
-3. Download the R script with the code to run the lab: \url{http://goo.gl/dBaxrq}
+3. Download the R script with the code to run the lab: \url{http://goo.gl/URPJdD} <!-- github site -->
 4. Connect to ```TheCantina``` wireless network.
 5. Use a shell/terminal window (Mac or *nix) or PuTTY (Windows) to connect to Hadoop and open R.
     - Log in to a server that can submit MapReduce jobs to Hadoop:
@@ -75,7 +75,7 @@ popular with specific subsets of their customers.
 
 R script for lab (on the internet): 
 
-- \url{http://goo.gl/dBaxrq} <!-- Henry's site -->
+- \url{http://goo.gl/URPJdD} <!-- github site -->
 
 Webpages to monitor Hadoop system and parallel computation status (on ```TheCantina``` local network):
 

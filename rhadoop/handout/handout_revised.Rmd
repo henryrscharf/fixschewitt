@@ -16,10 +16,10 @@ This section will last approximately 40 minutes.  The first 20-25 minutes  intro
 
 ## Extra materials (helpful, but not required)
 
-1. Presentation slides: \url{http://goo.gl/wmX6Xd} <!-- Henry's site -->
+1. Presentation slides: \url{http://goo.gl/Ew6jOP} <!-- github site -->
 2. Virtual machine used to run R/Hadoop for the lab (requires ~4GB RAM): \url{http://goo.gl/R5Okcr}  <!-- Dropbox -->
-3. Lab instructions: \url{http://goo.gl/z5BLaZ} <!-- Henry's site -->
-4. Lab R script: \url{http://goo.gl/dBaxrq} <!-- Henry's site -->
+3. Lab instructions: \url{http://goo.gl/6fkQr9} <!-- github site -->
+4. Lab R script: \url{http://goo.gl/URPJdD} <!-- github site -->
 5. PuTTY (SSH client for Windows): \url{http://goo.gl/vMv6ra}  <!-- PuTTY developer -->
 
 
