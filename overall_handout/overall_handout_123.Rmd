@@ -23,6 +23,8 @@ Josh Hewitt: joshua.hewitt@colostate.edu
 
     *The techniques we outline supplement basic to fluent programming skills in R.*
 
+-----
+
 # Section 1: The `foreach` package in R
 This section will last approximately 40 minutes. Participants are encouraged to follow along on their laptops.
 
@@ -53,9 +55,8 @@ This section will last approximately 30 minutes. Participants are encouraged to 
 1. When to use the `parallel` package in R
 2. How to parallelize `apply` functions
 3. How to parallelize a process that generates random numbers
-4. How to parallelize bootstrapping (example)
 
-## Extra materials (helpful, but not required)
+## Extra materials
 
 1. Presentation slides: http://goo.gl/5wQh0f
 2. R script: \url{http://goo.gl/d2XDcF} <!-- github site -->
@@ -80,7 +81,7 @@ This section will last approximately 40 minutes.  The first 20-25 minutes  intro
 4. *How* to use R with Hadoop (lab)
 
 
-## Extra materials (helpful, but not required)
+## Extra materials
 
 1. Presentation slides: \url{http://goo.gl/Ew6jOP} <!-- github site -->
 2. Virtual machine used to run R/Hadoop for the lab (requires ~4GB RAM): \url{http://goo.gl/R5Okcr}  <!-- Dropbox -->
