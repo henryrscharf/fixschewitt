@@ -1,8 +1,0 @@
-- personal info for CSP
-- handout
-  - add learning goal (technical one from list of four?)
-  - let josh know
-- post items on github
-- better intro
-  - format: demos, breaks, flag down other two
-  - my own learning goals
