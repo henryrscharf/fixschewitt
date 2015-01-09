@@ -128,7 +128,7 @@ system.time(
 
 ```
 elapsed 
-  0.028 
+  0.026 
 ```
 
 ## Why do we think we can do better?
@@ -155,7 +155,7 @@ system.time(
 
 ```
 elapsed 
-  0.062 
+  0.082 
 ```
 
 
@@ -190,16 +190,16 @@ summary(cars)
 ```
 
 ```
-     speed           dist    
- Min.   : 4.0   Min.   :  2  
- 1st Qu.:12.0   1st Qu.: 26  
- Median :15.0   Median : 36  
- Mean   :15.4   Mean   : 43  
- 3rd Qu.:19.0   3rd Qu.: 56  
- Max.   :25.0   Max.   :120  
+     speed           dist       
+ Min.   : 4.0   Min.   :  2.00  
+ 1st Qu.:12.0   1st Qu.: 26.00  
+ Median :15.0   Median : 36.00  
+ Mean   :15.4   Mean   : 42.98  
+ 3rd Qu.:19.0   3rd Qu.: 56.00  
+ Max.   :25.0   Max.   :120.00  
 ```
 
 Slide With Plot
 ========================================================
 
-![plot of chunk unnamed-chunk-2](foreach_slides_presentation-figure/unnamed-chunk-2.png) 
+![plot of chunk unnamed-chunk-2](foreach_slides_presentation-figure/unnamed-chunk-2-1.png) 
