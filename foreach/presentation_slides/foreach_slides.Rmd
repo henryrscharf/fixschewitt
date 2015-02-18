@@ -1,7 +1,7 @@
 ---
 title: "Moving from for to foreach"
 author: "Henry Scharf"
-date: "December 18, 2014"
+date: "February 21, 2014"
 output:
   ioslides_presentation:
     css: style_rainbow_brewer_11.css
@@ -394,7 +394,6 @@ alt = "parallel puppies"
 width = 1000>
 
 ## <span class = "nine">References</span>
-
 ### Other tutorials
 [Getting Started with doParallel and foreach](http://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf)
 
@@ -404,8 +403,7 @@ width = 1000>
 
 [Nesting foreach loops](http://cran.r-project.org/web/packages/foreach/vignettes/nested.pdf)
 
-### Data 
+### Data and a neat tool
 [citibike system data](https://www.citibikenyc.com/system-data)
 
-### Other neat tools:
 [menu meters](http://www.ragingmenace.com/software/menumeters/)

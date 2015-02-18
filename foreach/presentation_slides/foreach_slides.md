@@ -1,6 +1,6 @@
 # Moving from for to foreach
 Henry Scharf  
-December 18, 2014  
+February 21, 2014  
 
 
 
@@ -133,7 +133,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  29.709   1.344  31.986
+##  30.993   1.402  33.181
 ```
 
 ## K-fold CV with an apply function {.build}
@@ -153,7 +153,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  28.488   1.243  30.086
+##  29.293   1.236  30.763
 ```
 
 Both of these assume a single processor architecture. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -182,7 +182,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  16.452   0.753  17.987
+##  16.241   0.764  17.218
 ```
 
 # The breakdown
@@ -239,7 +239,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  31.796   1.435  16.410
+##  31.397   1.450  15.969
 ```
 <!--
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
@@ -343,7 +343,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.209   0.058   0.252
+##   0.292   0.091   0.247
 ```
 
 ```r
@@ -370,7 +370,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.071   0.006   0.079
+##   0.071   0.005   0.077
 ```
 
 ```r
@@ -387,7 +387,6 @@ alt = "parallel puppies"
 width = 1000>
 
 ## <span class = "nine">References</span>
-
 ### Other tutorials
 [Getting Started with doParallel and foreach](http://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf)
 
@@ -397,8 +396,7 @@ width = 1000>
 
 [Nesting foreach loops](http://cran.r-project.org/web/packages/foreach/vignettes/nested.pdf)
 
-### Data 
+### Data and a neat tool
 [citibike system data](https://www.citibikenyc.com/system-data)
 
-### Other neat tools:
 [menu meters](http://www.ragingmenace.com/software/menumeters/)
