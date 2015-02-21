@@ -22,7 +22,7 @@ February 21, 2015
 - Changing from a for loop to one of the `apply()` functions can help, but still doesn't use multiple processors.
 - Use the `parallel` package (thanks, Miranda!).
 - Don't use R.
-- Use the `foreach` package! [@Manual]
+- Use the `foreach` package! [@foreach]
 
 ### Why foreach?
 - Make use of our whole computer
@@ -133,7 +133,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  29.865   1.230  31.407
+##  28.550   1.110  29.737
 ```
 
 ## K-fold CV with an apply function {.build}
@@ -153,7 +153,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  28.686   1.134  30.167
+##  28.337   1.097  29.491
 ```
 
 Both of these assume a single processor architecture. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -182,7 +182,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  16.791   0.738  18.064
+##  15.957   0.728  16.885
 ```
 
 # The breakdown
@@ -239,7 +239,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  32.779   1.418  16.908
+##  31.315   1.402  16.125
 ```
 <!--
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
@@ -343,7 +343,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.305   0.104   0.263
+##   0.236   0.066   0.249
 ```
 
 ```r
@@ -370,7 +370,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.074   0.006   0.080
+##   0.071   0.006   0.077
 ```
 
 ```r

@@ -39,7 +39,7 @@ opts_chunk$set(cache=FALSE)
 - Changing from a for loop to one of the `apply()` functions can help, but still doesn't use multiple processors.
 - Use the `parallel` package (thanks, Miranda!).
 - Don't use R.
-- Use the `foreach` package! (thanks, Revolution Analytics!)
+- Use the `foreach` package! [@foreach]
 
 ### Why foreach?
 - Make use of our whole computer
