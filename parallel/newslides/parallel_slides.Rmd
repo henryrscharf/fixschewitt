@@ -1,0 +1,289 @@
+---
+title: "parallel"
+author: "Miranda Fix"
+date: "February 21, 2014"
+output:
+  ioslides_presentation:
+    css: style_rainbow_brewer_11.css
+    fig_height: 2
+    fig_width: 3
+    highlight: tango
+    incremental: yes
+    transition: 0
+    widescreen: yes
+---
+
+```{r setup, include=FALSE}
+# set global chunk options
+library(knitr)
+opts_chunk$set(cache=FALSE)
+opts_chunk$set(eval=TRUE)
+```
+
+## Learning goals
+
+- When to use the `parallel` package in R
+- How to parallelize `apply` functions
+- How to parallelize a process that generates random numbers
+
+# Why?
+
+## Why parallel?
+
+- Use your whole computer for embarassingly parallel tasks
+- Large gain in efficiency for a small amount of effort
+
+## Why `parallel`?
+
+The `parallel` package merges `multicore` and `snow`
+
+- Ships with recent versions of R
+- Integrated handling of random-number generation
+- By default, uses `multicore` functionality on Unix-like systems and `snow` functionality on Windows
+- (Can also use the `snow` functionality to execute on a cluster for both systems)
+
+# Getting started
+
+## Setup {.build}
+Make the desired number of cores available to R:
+
+```{r clustersetup, message=FALSE}
+require(parallel)
+
+# Determine number of CPU cores in your machine
+nCores = detectCores()
+
+# Create cluster with desired number of cores
+cl = makeCluster(nCores)
+```
+
+## MenuMeters
+
+<img 
+src = "menumeter2.png" 
+alt = "mm2" 
+width = 500>
+
+<img 
+src = "menumeter4.png" 
+alt = "mm4" 
+width = 500>
+
+## Parallelizing apply
+
+- `foreach` parallelizes `for` loops
+- `parallel` does the same for `apply` functions
+
+## Parallelizing apply {.build}
+
+```{r introapply}
+input = 1:3
+sapply(input, sqrt)
+lapply(input, sqrt)
+```
+
+## Parallelizing apply {.build}
+
+Consider this simple example:
+
+```{r testfun}
+input = 1:100
+
+testFun = function(i){
+  mu = mean(runif(1e+06, 0, i))
+  return(mu)
+}
+```
+
+(There is something wrong here... we'll come back to this.)
+
+## Parallelizing apply {.build}
+How would we do this with `foreach`?
+
+```{r foreach, eval=FALSE}
+system.time(
+  mu.foreach <- foreach(i=1:100,
+                     .combine = "c") %dopar% {
+                          testFun(i)
+                        }
+)
+```
+
+## Parallelizing apply {.build}
+Now let's try it with `sapply` and `parSapply`
+
+```{r sapply.1}
+system.time(
+  sapply(input, testFun)
+  )
+```
+
+```{r sapply.2}
+system.time(
+  parSapply(cl, input, testFun)
+  )
+```
+
+## Parallelizing apply {.build}
+Now let's try it with `lapply` and `parLapply`
+
+```{r lapply.1}
+system.time(
+  lapply(input, testFun)
+  )
+```
+
+```{r lapply.2}
+system.time(
+  parLapply(cl, input, testFun)
+  )
+```
+
+## Parallelizing apply {.build}
+We could also use `mclapply`
+
+```{r apply2.3}
+# not available on Windows
+system.time(
+  mclapply(input, testFun, mc.cores=nCores)
+  )
+```
+
+# Random number generation
+
+## The issue
+
+- Need to be careful when parallelizing a process which generates (psuedo-) random numbers
+- Want the different processes to run independent (and reproducible) random-number streams
+
+## clusterSetRNGStream {.build}
+
+Let's go back and fix our first example:
+
+```{r rngstream}
+input = 1:100
+testFun = function(i){ mean(runif(1e+06, 0, i)) }
+```
+
+```{r rngstream2}
+clusterSetRNGStream(cl, iseed=2015)
+res1 = parSapply(cl, input, testFun)
+
+clusterSetRNGStream(cl, iseed=2015)
+res2 = parSapply(cl, input, testFun)
+```
+
+```{r rngstream3}
+identical(res1, res2)
+```
+
+# <span class = "ten">Example</span>: bootstrapping
+
+## Bootstrapping
+
+- An embarassingly parallel task
+- Resamples the data -- uses random number generation
+
+## Bootstrapping
+<div class='columns-2'>
+
+- Predict number of arrivals at 5pm on a weekday for the NOHO station
+- Point estimate: 23.3 arrivals
+- Create a 95% bootstrap confidence interval for this prediction
+
+<img 
+src = "map_top7.png" 
+alt = "locations" 
+width = 550>
+</div>
+
+## Bootstrapping
+
+```{r boot1, message=FALSE}
+run1 = function(...){
+  require(boot); require(splines)
+  load(url("http://www.stat.colostate.edu/~scharfh/CSP_parallel/data/arrivals_subset.RData"))
+  bikePred = function(data, indices){
+    d = data[indices,]
+    big.glm <- glm(arrivals ~
+                     bs(hour, degree = 4)*weekend
+                   + bs(hour, degree = 4)*as.factor(id),
+                   data = d, family = "poisson")
+    mynewdat = data.frame(weekend=FALSE, id=293, hour=17)
+    return(predict(object=big.glm, newdata=mynewdat, type="response"))
+  }
+  boot(data=arrivals.sub, statistic=bikePred, R=250)
+}
+```
+
+## Bootstrapping {.build}
+
+```{r boot2, message=FALSE}
+set.seed(2015)
+system.time(
+  bike.boot <- do.call(c, lapply(seq_len(nCores), run1))
+  )
+```
+
+```{r parboot2, message=FALSE}
+clusterSetRNGStream(cl, iseed=2015)
+system.time(
+  bike.boot2 <- do.call(c, parLapply(cl, seq_len(nCores), run1))
+  )
+```
+
+## Bootstrapping
+
+<img 
+src = "boothist.png" 
+alt = "histogram" 
+width = 650>
+
+## Bootstrapping
+
+```{r bootCI}
+boot.ci(bike.boot2, type="perc")
+
+```
+
+----
+
+Since the `boot` package has built-in parallel support, we could also simply run the following:
+
+```{r parboot3.1, echo=FALSE}
+require(boot); require(splines)
+load(url("http://www.stat.colostate.edu/~scharfh/CSP_parallel/data/arrivals_subset.RData"))
+mynewdat = data.frame(weekend=FALSE, id=293, hour=17)
+
+bikePred = function(data, indices){
+  d = data[indices,]
+  big.glm <- glm(arrivals ~
+      bs(hour, degree = 4)*weekend + bs(hour, degree = 4)*as.factor(id),
+      data = d, family = "poisson")
+  return(predict(object=big.glm, newdata=mynewdat, type="response"))
+}
+```
+
+```{r parboot3.2}
+nBoot = nCores*250
+set.seed(2015, kind="L'Ecuyer")
+system.time(
+  bike.boot3 <- boot(data=arrivals.sub, statistic=bikePred, R=nBoot, 
+                    parallel="multicore", ncpus=4)
+)
+```
+
+## Stop cluster
+Don't forget to stop your cluster when you are done using it.
+
+```{r}
+stopCluster(cl)
+```
+
+## <span class = "nine">Further Reading</span>
+
+[Package ‘parallel’ vignette](http://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf)
+
+[Ryan Rosario's LA R User Group talk](http://www.bytemining.com/files/talks/larug/hpc2012/HPC_in_R_rev2012.pdf)
+
+[Max Gordon's blog post](http://gforge.se/2015/02/how-to-go-parallel-in-r-basics-tips/)
