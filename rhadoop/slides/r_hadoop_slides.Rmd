@@ -1,7 +1,7 @@
 ---
 title: "Computing with R and Hadoop"
 author: Josh Hewitt
-date: 19 December 2014
+date: 21 February 2015
 output:
   ioslides_presentation:
     css: style_rainbow_brewer_11.css

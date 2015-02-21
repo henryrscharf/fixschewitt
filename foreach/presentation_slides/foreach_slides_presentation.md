@@ -112,7 +112,7 @@ system.time(
 
 ```
 elapsed 
-  0.047 
+  0.038 
 ```
 
 
@@ -128,7 +128,7 @@ system.time(
 
 ```
 elapsed 
-  0.025 
+  0.026 
 ```
 
 ## Why do we think we can do better?
@@ -155,7 +155,7 @@ system.time(
 
 ```
 elapsed 
-  0.064 
+  0.057 
 ```
 
 

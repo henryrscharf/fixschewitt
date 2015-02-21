@@ -1,7 +1,7 @@
 ---
 title: "Moving from for to foreach"
 author: "Henry Scharf"
-date: "February 21, 2014"
+date: "February 21, 2015"
 output:
   ioslides_presentation:
     css: style_rainbow_brewer_11.css
@@ -12,7 +12,7 @@ output:
     widescreen: yes
   beamer_presentation:
     incremental: yes
-bibliography: ../foreach.bib
+bibliography: foreach.bib
 ---
 
 ```{r setup, include=FALSE}
