@@ -76,6 +76,22 @@ system.time(parLapply(cl, input, testFun))
 system.time(mclapply(input, testFun, mc.cores=nCores))
 
 #------------------------------#
+# Variable scope               #
+#------------------------------#
+
+# Keep in mind you need to specify all the variables, packages, etc.
+# that the parallel function needs.
+
+# For example, This would return an error message:
+  # base = 2
+  # parLapply(cl, 1:3, function(x){base^x})
+
+# You can use clusterExport to get around this:
+base = 2
+clusterExport(cl, "base")
+parLapply(cl, 1:3, function(x){base^x})
+
+#------------------------------#
 # Random number generation     #
 #------------------------------#
 
