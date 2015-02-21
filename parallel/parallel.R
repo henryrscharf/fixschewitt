@@ -5,10 +5,10 @@
 #--------------------------------------#
 
 #-------------------------#
-# Set up parallel backend #
+# Setup                   #
 #-------------------------#
 
-require(doParallel) # This will also load other packages we need
+require(parallel)
 
 # Determine number of CPU cores in your machine
 nCores = detectCores()
@@ -16,32 +16,50 @@ nCores = detectCores()
 # Create cluster with desired number of cores
 cl = makeCluster(nCores)
 
-# Register cluster
-registerDoParallel(cl)
+# stopCluster(cl) # Always stop your cluster when you are done
 
-#------------------------------#
-# Analogues of apply functions #
-#------------------------------#
+  #----------------------------#
+  #     ALTERNATELY...         #
+  #----------------------------#
+  # If you also want to be able to use foreach,
+  # it is necessary to register the cluster, for example:
 
-# A simple function to run 100 times
+  # require(doParallel)
+  # nCores = detectCores()
+  # cl = makeCluster(nCores)
+  # registerDoParallel(cl)
+
+#---------------------------------------#
+# Quick refresher on apply functions    #
+#---------------------------------------#
+input = 1:3
+# ?sapply # to see R help file
+sapply(input, sqrt) # output is a vector
+lapply(input, sqrt) # output is a list
+
+#---------------------------------------#
+# Parallel analogues of apply functions #
+#---------------------------------------#
+
+# A simple function to apply to the numbers 1 through 100
 # (Calculate the mean of a million random numbers ~ Unif(0,i))
 # Note: We'll come back to issues with random number generation later!
 
 input = 1:100
-input.list = as.list(input)
 
 testFun = function(i){
   mu = mean(runif(1e+06, 0, i))
   return(mu)
 }
 
-# How would we do this with foreach?
-system.time(
-  mu.foreach <- foreach(i=1:100,
-                        .combine = "c") %dopar% {
-                          testFun(i)
-                        }
-)
+  # How would we do this with foreach?
+  # (Note: to run this you will need to register the cluster, see "ALTERNATELY" above)
+      # system.time(
+      #   mu.foreach <- foreach(i=1:100,
+      #                         .combine = "c") %dopar% {
+      #                           testFun(i)
+      #                         }
+      # )
 
 # Using sapply and parSapply
 system.time(sapply(input, testFun))
@@ -49,41 +67,28 @@ system.time(sapply(input, testFun))
 system.time(parSapply(cl, input, testFun))
 
 # Using lapply and parLapply
-system.time(lapply(input.list, testFun))
+system.time(lapply(input, testFun))
 
-system.time(parLapply(cl, input.list, testFun))
+system.time(parLapply(cl, input, testFun))
 
 # Using mclapply (not available on Windows)
-system.time(mclapply(input.list, testFun, mc.cores=nCores))
-
-#------------------------------#
-# Vector map functions         #
-#------------------------------#
-
-# If you have a function that takes a vector as its input,
-# you can parallelize that with `pvec`, which splits
-# the vector into pieces that get sent to the different processors
-# Note: pvec assumes that c(FUN(x[1]),FUN(x[2])) = FUN(x[1:2])
-
-# Example: evaluate Matern covariance function for 5 million distances
-require(fields)
-d = runif(5e+06, 0.1, 10)
-system.time(Matern(d))
-
-system.time(pvec(d, Matern, mc.cores=nCores))
+# Note: this can be run without setting up a cluster first
+system.time(mclapply(input, testFun, mc.cores=nCores))
 
 #------------------------------#
 # Random number generation     #
 #------------------------------#
 
 # Back to the first example with testFun
-clusterSetRNGStream(cl, iseed=0)
+# How to properly set up the random number streams
+
+clusterSetRNGStream(cl, iseed=2015)
 res1 = parSapply(cl, input, testFun)
 
-clusterSetRNGStream(cl, iseed=0)
+clusterSetRNGStream(cl, iseed=2015)
 res2 = parSapply(cl, input, testFun)
 
-identical(res1, res2)
+identical(res1, res2) # Setting the seed enables reproducibility!
 
 #----------------------------------#
 # Bootstrapping the bikeshare data #
@@ -93,7 +98,7 @@ identical(res1, res2)
 # Use bootstrapping to get a 95% CI of this prediction
 # Note: We need to be careful about random number generation!
 
-# Method 1 - send this function to each of the processors
+# Method 1 - send this function to each of the 'cores'
 
 run1 = function(...){
   require(boot); require(splines)
@@ -111,12 +116,16 @@ run1 = function(...){
 }
 
 # First try without parallelizing
+# Note: do.call simply passes the list of arguments to a function call
+# (in this case combining the results into one boot object)
+
+set.seed(2015)
 system.time(
   bike.boot <- do.call(c, lapply(seq_len(nCores), run1))
 )
 
 # Now try it in parallel!
-clusterSetRNGStream(cl, iseed=123)
+clusterSetRNGStream(cl, iseed=2015)
 system.time(
   bike.boot2 <- do.call(c, parLapply(cl, seq_len(nCores), run1))
 )
@@ -140,7 +149,7 @@ bikePred = function(data, indices){
 }
 
 nBoot = nCores*250
-set.seed(123, kind="L'Ecuyer")
+set.seed(2015, kind="L'Ecuyer")
 
 system.time(
   bike.boot3 <- boot(data=arrivals.sub, statistic=bikePred, R=nBoot, 
