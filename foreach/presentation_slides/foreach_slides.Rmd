@@ -12,7 +12,7 @@ output:
     widescreen: yes
   beamer_presentation:
     incremental: yes
-bibliography: foreach.bib
+bibliography: ../foreach.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -39,7 +39,7 @@ opts_chunk$set(cache=FALSE)
 - Changing from a for loop to one of the `apply()` functions can help, but still doesn't use multiple processors.
 - Use the `parallel` package (thanks, Miranda!).
 - Don't use R.
-- Use the `foreach` package! [@foreach]
+- Use the `foreach` package! [@Manual]
 
 ### Why foreach?
 - Make use of our whole computer
