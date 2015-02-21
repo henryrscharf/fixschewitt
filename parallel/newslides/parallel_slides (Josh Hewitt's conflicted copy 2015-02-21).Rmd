@@ -1,7 +1,7 @@
 ---
 title: "parallel"
 author: "Miranda Fix"
-date: "February 21, 2015"
+date: "February 21, 2014"
 output:
   ioslides_presentation:
     css: style_rainbow_brewer_11.css
@@ -147,14 +147,6 @@ We could also use `mclapply`
 system.time(
   mclapply(input, testFun, mc.cores=nCores)
   )
-```
-
-## clusterExport
-
-```{r export2}
-base = 2
-clusterExport(cl, "base")
-parLapply(cl, 1:3, function(x){base^x})
 ```
 
 # Random number generation
