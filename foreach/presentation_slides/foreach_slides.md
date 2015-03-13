@@ -133,7 +133,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  32.858   1.148  34.867
+##  28.884   1.013  29.995
 ```
 
 ## K-fold CV with an apply function {.build}
@@ -153,7 +153,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  31.291   1.100  32.815
+##  27.306   0.990  28.340
 ```
 
 Both of these assume a single processor architecture. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -183,7 +183,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  21.591   0.791  24.194
+##  15.463   0.630  16.188
 ```
 
 # The breakdown
@@ -241,7 +241,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  42.440   1.616  23.453
+##  30.286   1.284  15.551
 ```
 <!--
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
@@ -345,7 +345,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.312   0.070   0.285
+##   0.254   0.069   0.229
 ```
 
 ```r
@@ -372,7 +372,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.074   0.006   0.081
+##   0.072   0.005   0.078
 ```
 
 ```r

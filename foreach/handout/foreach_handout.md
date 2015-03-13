@@ -161,7 +161,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  20.472   0.946  21.974
+##  19.607   0.655  20.317
 ```
 
 
@@ -183,7 +183,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  21.880   1.103  24.427
+##  19.557   0.651  20.257
 ```
 
 Neither of the first two methods take advantage of multiple processors. While the `apply()` functions avoid the inherently sluggish nature of for loops in `R`, they are still ignorant of the processor structure. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -200,7 +200,8 @@ registerDoParallel(cl = 2)
 system.time(
     err.foreach <- foreach(i=1:K,
                            .inorder = FALSE,
-                           .combine = "cbind") %dopar% {
+                           .combine = "cbind",
+                           .packages = 'splines') %dopar% {
                                get.errs(test.set = cv.test.sets[, i],
                                         discarded = discarded,
                                         q = 1)
@@ -210,7 +211,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  11.280   0.545  12.207
+##   9.894   0.410  10.459
 ```
 
 # components of a foreach loop
@@ -244,7 +245,8 @@ registerDoParallel(cl = 2)
 system.time(
     err.foreach.iter <- foreach(x = iter(cv.test.sets, by = "col"),
                                .inorder = FALSE,
-                               .combine = "cbind") %dopar% {
+                               .combine = "cbind",
+                               .packages = "splines") %dopar% {
                                    get.errs(test.set = x,
                                             discarded = discarded,
                                             q = 1)
@@ -254,7 +256,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  23.969   1.238  15.214
+##   9.997   0.426  10.804
 ```
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
 
@@ -363,7 +365,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.077   0.006   0.083
+##   0.070   0.005   0.074
 ```
 
 ```r
