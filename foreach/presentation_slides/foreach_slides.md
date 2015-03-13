@@ -133,7 +133,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  28.550   1.110  29.737
+##  32.858   1.148  34.867
 ```
 
 ## K-fold CV with an apply function {.build}
@@ -153,7 +153,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  28.337   1.097  29.491
+##  31.291   1.100  32.815
 ```
 
 Both of these assume a single processor architecture. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -172,7 +172,8 @@ registerDoParallel(cl = 2)
 system.time(
     err.foreach <- foreach(i=1:K,
                            .inorder = FALSE,
-                           .combine = "cbind") %dopar% {
+                           .combine = "cbind",
+                           .packages = 'splines') %dopar% {
                                get.errs(test.set = cv.test.sets[, i],
                                         discarded = discarded,
                                         q = 1)
@@ -182,7 +183,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  15.957   0.728  16.885
+##  21.591   0.791  24.194
 ```
 
 # The breakdown
@@ -228,18 +229,19 @@ library(iterators)
 registerDoParallel(cl = 2)
 system.time(
     err.foreach.iter <- foreach(x = iter(cv.test.sets, by = "col"),
-                               .inorder = FALSE,
-                               .combine = "cbind") %dopar% {
-                                   get.errs(test.set = x,
-                                            discarded = discarded,
-                                            q = 1)
+                                .inorder = FALSE,
+                                .combine = "cbind",
+                                .packages = 'splines') %dopar% {
+                                    get.errs(test.set = x,
+                                             discarded = discarded,
+                                             q = 1)
                                    }
     )
 ```
 
 ```
 ##    user  system elapsed 
-##  31.315   1.402  16.125
+##  42.440   1.616  23.453
 ```
 <!--
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
@@ -343,7 +345,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.236   0.066   0.249
+##   0.312   0.070   0.285
 ```
 
 ```r
@@ -370,7 +372,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.071   0.006   0.077
+##   0.074   0.006   0.081
 ```
 
 ```r

@@ -88,7 +88,8 @@ registerDoParallel(cl = 2)
 system.time(
     err.foreach <- foreach(i=1:K,
                            .inorder = FALSE,
-                           .combine = "cbind") %dopar% {
+                           .combine = "cbind",
+                           .packages = 'splines') %dopar% {
                                get.errs(test.set = cv.test.sets[, i],
                                         discarded = discarded,
                                         q = 1)
@@ -101,7 +102,8 @@ registerDoParallel(cl = 2)
 system.time(
     err.foreach.iter <- foreach(x = iter(cv.test.sets, by = "col"),
                                 .inorder = FALSE,
-                                .combine = "cbind") %dopar% {
+                                .combine = "cbind",
+                                .packages = 'splines') %dopar% {
                                     get.errs(test.set = x,
                                              discarded = discarded,
                                              q = 1)
