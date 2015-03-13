@@ -16,8 +16,8 @@ discarded <- sample(1:N, size = 8)
 cv.test.sets <- matrix(sample((1:N)[-discarded], size = N - 8), ncol = K)
 
 ####################
-## for each fold, ##
-## fit the model  ##
+## for each fold, ## 
+## fit the model  ##    
 ## and get the    ##
 ## training error ##
 ####################
@@ -72,7 +72,7 @@ system.time(
 )
 
 system.time(
-    err.apply <- sapply(X = 1:K,
+    err.apply <- sapply(X = 1:K, 
                         FUN = function(i) {
                             get.errs(test.set = cv.test.sets[, i],
                                      discarded = discarded,
@@ -88,7 +88,8 @@ registerDoParallel(cl = 2)
 system.time(
     err.foreach <- foreach(i=1:K,
                            .inorder = FALSE,
-                           .combine = "cbind") %dopar% {
+                           .combine = "cbind",
+                           .packages = 'splines') %dopar% {
                                get.errs(test.set = cv.test.sets[, i],
                                         discarded = discarded,
                                         q = 1)
@@ -101,7 +102,8 @@ registerDoParallel(cl = 2)
 system.time(
     err.foreach.iter <- foreach(x = iter(cv.test.sets, by = "col"),
                                 .inorder = FALSE,
-                                .combine = "cbind") %dopar% {
+                                .combine = "cbind",
+                                .packages = 'splines') %dopar% {
                                     get.errs(test.set = x,
                                              discarded = discarded,
                                              q = 1)
@@ -113,12 +115,12 @@ system.time(
 #################################
 library(doRNG)
 registerDoParallel(cl = 2)
-blah1 <- foreach(x = 1:10,
+blah1 <- foreach(x = 1:10, 
                  .options.RNG = 1985,
                  .combine = 'c') %dorng% {
                      rnorm(1)
                  }
-## or
+## or 
 registerDoParallel(cl = 2)
 registerDoRNG(seed = 1985)
 blah2 <- foreach(x = 1:10,
@@ -139,13 +141,11 @@ registerDoParallel(cl = 4)
 system.time(
     busiest <- foreach(date = 1:31,
                        .inorder = FALSE,
-                       .combine = 'c',
-                       .packages = 'splines') %:%
+                       .combine = 'c') %:%
         foreach(id = unique(arrivals.sub$id),
                 .inorder = FALSE,
-                .combine = '+',
-                .packages = 'splines') %dopar% {
+                .combine = '+') %dopar% {
                     sum.arrivals(date = date,
                                  id = id)
                 })
-which(busiest==max(busiest))
+which(busiest==max(busiest))    
