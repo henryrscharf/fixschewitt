@@ -1,7 +1,7 @@
 ---
 title: "Moving from for to foreach"
 author: "Henry Scharf"
-date: "February 21, 2015"
+date: "May 15, 2015"
 output:
   ioslides_presentation:
     css: style_rainbow_brewer_11.css
@@ -18,6 +18,7 @@ bibliography: ../foreach.bib
 ```{r setup, include=FALSE}
 # set global chunk options
 library(knitr)
+library(splines)
 opts_chunk$set(cache=FALSE)
 ```
 
@@ -211,7 +212,7 @@ system.time(
     err.foreach <- foreach(i=1:K,
                            .inorder = FALSE,
                            .combine = "cbind",
-                           .packages = 'splines') %dopar% {
+                           .packages = "splines") %dopar% {
                                get.errs(test.set = cv.test.sets[, i],
                                         discarded = discarded,
                                         q = 1)
@@ -278,7 +279,7 @@ system.time(
     err.foreach.iter <- foreach(x = iter(cv.test.sets, by = "col"),
                                 .inorder = FALSE,
                                 .combine = "cbind",
-                                .packages = 'splines') %dopar% {
+                                .packages = "splines") %dopar% {
                                     get.errs(test.set = x,
                                              discarded = discarded,
                                              q = 1)
@@ -349,10 +350,12 @@ registerDoParallel(cl = _)
 system.time(
     busiest <- foreach(date = ___,
                        ._______ = FALSE,
-                       .combine = ___) %:%
+                       .combine = ___,
+                       .packages = ______,) %:%
                            foreach(id = unique(arrivals.sub$id),
                                    .inorder = _____,
-                                   .combine = ___) %_____% {
+                                   .combine = ___,
+                                   .packages = ______,) %_____% {
                                        sum.arrivals(date = date,
                                                     id = id)
                                        }
@@ -369,7 +372,7 @@ system.time(
                        .combine = 'c') %:%
                            foreach(id = unique(arrivals.sub$id),
                                    .inorder = FALSE,
-                                   .combine = '+') %dopar% {
+                                   .combine = '+', .packages = 'splines') %dopar% {
                                        sum.arrivals(date = date,
                                                     id = id)
                                    })
