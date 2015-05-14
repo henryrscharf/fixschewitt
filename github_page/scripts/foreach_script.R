@@ -1,6 +1,6 @@
 # title: "Moving from for to foreach"
 # author: "Henry Scharf"
-# date: "December 18, 2014"
+# date: "May 14, 2015"
 
 ###########################################
 ## load the data and creat the test sets ##
@@ -89,7 +89,7 @@ system.time(
     err.foreach <- foreach(i=1:K,
                            .inorder = FALSE,
                            .combine = "cbind",
-                           .packages = 'splines') %dopar% {
+                           .packages = "splines") %dopar% {
                                get.errs(test.set = cv.test.sets[, i],
                                         discarded = discarded,
                                         q = 1)
@@ -103,7 +103,7 @@ system.time(
     err.foreach.iter <- foreach(x = iter(cv.test.sets, by = "col"),
                                 .inorder = FALSE,
                                 .combine = "cbind",
-                                .packages = 'splines') %dopar% {
+                                .packages = "splines") %dopar% {
                                     get.errs(test.set = x,
                                              discarded = discarded,
                                              q = 1)
