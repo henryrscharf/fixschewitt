@@ -1,6 +1,6 @@
 # moving from for to foreach
 Henry Scharf  
-December 18, 2014  
+May 15, 2015  
 
 
 <!--
@@ -161,7 +161,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  19.607   0.655  20.317
+##  16.819   0.851  17.719
 ```
 
 
@@ -183,7 +183,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  19.557   0.651  20.257
+##  16.840   0.825  17.727
 ```
 
 Neither of the first two methods take advantage of multiple processors. While the `apply()` functions avoid the inherently sluggish nature of for loops in `R`, they are still ignorant of the processor structure. We want to chop the job into halves, fourths, etc. and use the _whole_ computer!
@@ -201,7 +201,7 @@ system.time(
     err.foreach <- foreach(i=1:K,
                            .inorder = FALSE,
                            .combine = "cbind",
-                           .packages = 'splines') %dopar% {
+                           .packages = "splines") %dopar% {
                                get.errs(test.set = cv.test.sets[, i],
                                         discarded = discarded,
                                         q = 1)
@@ -211,7 +211,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   9.894   0.410  10.459
+##   0.042   0.014   9.657
 ```
 
 # components of a foreach loop
@@ -256,7 +256,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   9.997   0.426  10.804
+##  27.629   1.531  10.630
 ```
 Iterators can also be used to keep from ever having to store even a single copy of the object. For more on these, see [Using the foreach package](http://cran.r-project.org/web/packages/foreach/vignettes/foreach.pdf) and [Using the iterators package](http://cran.r-project.org/web/packages/iterators/vignettes/iterators.pdf).
 
@@ -273,6 +273,12 @@ library(doRNG)
 ## Loading required package: rngtools
 ## Loading required package: pkgmaker
 ## Loading required package: registry
+## 
+## Attaching package: 'pkgmaker'
+## 
+## The following object is masked from 'package:base':
+## 
+##     isNamespaceLoaded
 ```
 
 ```r
@@ -333,7 +339,8 @@ system.time(
     registerDoParallel(cl = 2)
     busiest <- foreach(date = ___,
                        ._______ = FALSE,
-                       .combine = ___) %:%
+                       .combine = ___,
+                       .packages = "_______") %:%
                            foreach(id = unique(arrivals.sub$id),
                                    .inorder = ______,
                                    .combine = ___) %_____% {
@@ -365,7 +372,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.070   0.005   0.074
+##   0.052   0.008   0.063
 ```
 
 ```r

@@ -1,7 +1,7 @@
 ---
 title: "moving from for to foreach"
 author: "Henry Scharf"
-date: "December 18, 2014"
+date: "May 15, 2015"
 output:
   html_document:
     css: style_rainbow_brewer_11.css
@@ -28,6 +28,7 @@ bibliography: ../foreach.bib
 ```{r setup, include=FALSE}
 # set global chunk options
 library(knitr)
+library(splines)
 opts_chunk$set(cache=FALSE)
 ```
 
@@ -204,7 +205,7 @@ system.time(
     err.foreach <- foreach(i=1:K,
                            .inorder = FALSE,
                            .combine = "cbind",
-                           .packages = 'splines') %dopar% {
+                           .packages = "splines") %dopar% {
                                get.errs(test.set = cv.test.sets[, i],
                                         discarded = discarded,
                                         q = 1)
@@ -322,7 +323,8 @@ system.time(
     registerDoParallel(cl = 2)
     busiest <- foreach(date = ___,
                        ._______ = FALSE,
-                       .combine = ___) %:%
+                       .combine = ___,
+                       .packages = "_______") %:%
                            foreach(id = unique(arrivals.sub$id),
                                    .inorder = ______,
                                    .combine = ___) %_____% {
